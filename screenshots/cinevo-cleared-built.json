@@ -1,0 +1,38 @@
+{
+  "url": "http://127.0.0.1:8081/app",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 602,
+      "bodyTextHash": "c372e1ffef1c7f1ec8aef34d0d99a9385b377cb1b9e7227f0cb078b021b65c93",
+      "bodyTextPrefix": "CINEVO Home Browse Maze Community Data Curators Library Nostalgi",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-cleared-built.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 538,
+      "bodyTextHash": "3aa5aa6ac3de6e3cd87cfa01470571b3fdc79c8e8d11282a9c156bd89f86f05b",
+      "bodyTextPrefix": "CINEVO Core FEATURED FOR YOUR NIGHT The Neon Blade 2026 · 2h 14m",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-cleared-built-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/cinevo-cleared-built.json",
+  "divergesFromBaseline": false,
+  "baselineReasons": []
+}

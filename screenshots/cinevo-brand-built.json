@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8081/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 1019,
+      "bodyTextHash": "d7fac340a8dfe1c020443ddb89085806538cd4e457344be5a3a71743a0651c59",
+      "bodyTextPrefix": "CINEVO Press kit Node GET STARTED CINEVO Cinema, Reinvented. GET",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-brand-built.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 1004,
+      "bodyTextHash": "ee45f7c7f96dbe2419e7e0c277249da68ad430135056b5cd98a8c32213e6116d",
+      "bodyTextPrefix": "CINEVO GET STARTED CINEVO Cinema, Reinvented. GET STARTED SEE DE",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-brand-built-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/cinevo-brand-built.json"
+}

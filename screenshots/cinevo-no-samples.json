@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/app",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 614,
+      "bodyTextHash": "5e091eb6e1d329336701047be04cd3a90c0c40215ee3b1cef78bc24702362165",
+      "bodyTextPrefix": "CINEVO Home Browse Maze Community Data Curators Library Nostalgi",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-no-samples.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 545,
+      "bodyTextHash": "bcf30af517f73df27f5f5aac07e96d0168db3894407eddb36767c7deeb23773f",
+      "bodyTextPrefix": "CINEVO Core YOUR CINEMA Nothing queued. Add a folder, or pair CI",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-no-samples-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/cinevo-no-samples.json"
+}

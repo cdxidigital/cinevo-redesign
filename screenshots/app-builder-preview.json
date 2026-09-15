@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 413,
+      "bodyTextHash": "7eeb217790e0fecf77b8f9c470800ff65bb32968b3bbbe1a195c75f31d143d0b",
+      "bodyTextPrefix": "CINEVO Enter cinema PRIVATE BY DESIGN YOUR MEDIA. YOUR MOMENT. A",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 413,
+      "bodyTextHash": "7eeb217790e0fecf77b8f9c470800ff65bb32968b3bbbe1a195c75f31d143d0b",
+      "bodyTextPrefix": "CINEVO Enter cinema PRIVATE BY DESIGN YOUR MEDIA. YOUR MOMENT. A",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}

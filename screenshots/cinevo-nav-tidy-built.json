@@ -1,0 +1,38 @@
+{
+  "url": "http://127.0.0.1:8081/app",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 519,
+      "bodyTextHash": "4d91e52292642410d9e052941aa8728d19ee6d02c35108904f79c01d316de288",
+      "bodyTextPrefix": "CINEVO Home Browse Library Core YOUR CINEMA Nothing queued. Add ",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-nav-tidy-built.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 494,
+      "bodyTextHash": "aca5a6a2fdda3b799a15d7f652cf6cebdf0a72e196d649723d0d0cbe96e6c52b",
+      "bodyTextPrefix": "CINEVO YOUR CINEMA Nothing queued. Add a folder, or pair CINEVO ",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-nav-tidy-built-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/cinevo-nav-tidy-built.json",
+  "divergesFromBaseline": false,
+  "baselineReasons": []
+}

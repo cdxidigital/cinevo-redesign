@@ -1,0 +1,38 @@
+{
+  "url": "http://127.0.0.1:8080/app",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 1071,
+      "bodyTextHash": "2bdeee457dad2a77ab4ea251082007a0d4a0078ad57f30ad446533492ca87df0",
+      "bodyTextPrefix": "CINEVO Home Browse Maze Community Data Curators Library Nostalgi",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-beta-app.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 1002,
+      "bodyTextHash": "efb36f3122561c17ba0f77d6f1f6b2bce05e67b7ef8136a197c258a6187bf6c7",
+      "bodyTextPrefix": "CINEVO Core FEATURED FOR YOUR NIGHT Quantum Horizon 2026 · 2h 31",
+      "horizontalOverflow": false,
+      "consoleErrors": [
+        "A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:\n\n- A server/client branch `if (typeof window !== 'undefined')`.\n- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.\n- Date formatting in a user's locale which doesn't match the server.\n- External changing data without sending a snapshot of it along with the HTML.\n- Invalid HTML tag nesting.\n\nIt can also happen if the client has a browser extension installed which messes with the HTML before React loaded.\n\n%s%s https://react.dev/link/hydration-mismatch \n\n  ...\n    <SafeFragment fallback={null}>\n      <CatchBoundary getResetKey={function getResetKey} errorComponent={function AppErrorComponent} ...>\n        <SafeFragment fallback={function fallback}>\n          <MatchInnerImpl match={{id:\"/app/app\", ...}}>\n            <Lazy>\n              <Cinema>\n                <Shell overlays={<Fragment>}>\n                  <div className=\"min-h-scre...\">\n                    <div>\n                    <header>\n                    <main className=\"relative z...\">\n                      <Rehydrate>\n                      <Keys>\n                      <RoomSwitch room=\"stage\">\n                        <StageRoom>\n                          <div>\n                            <section>\n                            <div>\n                            <div>\n                            <div className=\"mt-6 grid ...\">\n                              <aside>\n                              <section className=\"rounded-xl...\">\n                                <p>\n                                <h2>\n                                <p>\n                                <form className=\"mt-4 flex ...\" onSubmit={function onSubmit}>\n                                  <input\n                                    value=\"\"\n                                    onChange={function onChange}\n                                    maxLength={400}\n                                    placeholder=\"What should I watch tonight?\"\n                                    aria-label=\"Ask CINEVO\"\n                                    className=\"h-11 flex-1 rounded-md border border-cine-border bg-cine-well px-3 font-ui\"\n-                                   style={{caret-color:\"transparent\"}}\n                                  >\n                                  ...\n                            ...\n                    ...\n"
+      ],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-beta-app-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/cinevo-beta-app.json"
+}

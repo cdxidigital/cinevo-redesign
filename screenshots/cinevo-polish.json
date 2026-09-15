@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/app",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 992,
+      "bodyTextHash": "d64bc17a21366eed7d31f8cdb3f0d81231ef694fbc67a62d63123d606b5e1797",
+      "bodyTextPrefix": "CINEVO Home Browse Maze Community Data Curators Library Nostalgi",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-polish.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 928,
+      "bodyTextHash": "a68036b708f9bfae649430d9be7d4d15ec621b8fb2092cedfeecf40b8688302d",
+      "bodyTextPrefix": "CINEVO Core FEATURED FOR YOUR NIGHT Quantum Horizon 2026 · 2h 31",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-polish-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/cinevo-polish.json"
+}
