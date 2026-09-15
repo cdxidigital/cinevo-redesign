@@ -1,5 +1,6 @@
 {
   "title": "CINEVO",
-  "description": "A private cinematic home for the libraries you already own.",
-  "card": "custom"
+  "description": "Cinema, reinvented. Your library. No ads. No subscriptions.",
+  "card": "custom",
+  "color": "0B0B0B"
 }

@@ -23,9 +23,10 @@ export function Player() {
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !file) return;
+    video.muted = muted;
     if (playing) void video.play().catch(() => useCinevo.setState({ playing: false }));
     else video.pause();
-  }, [playing, file, playingId]);
+  }, [playing, file, playingId, muted]);
 
   useEffect(() => {
     if (!playing || !file) {
@@ -47,15 +48,55 @@ export function Player() {
     };
   }, [playing, file]);
 
-  if (!title) return null;
-
   const seek = (value: number) => {
+    if (!title) return;
     setProgress(title.id, value);
     const video = videoRef.current;
     if (video && Number.isFinite(video.duration) && video.duration > 0) {
       video.currentTime = (value / 100) * video.duration;
     }
   };
+
+  const onToggle = () => {
+    if (!title) return;
+    const video = videoRef.current;
+    if ((progress >= 100 || video?.ended) && video && file) {
+      video.currentTime = 0;
+      setProgress(title.id, 0);
+      useCinevo.setState({ playing: true });
+      void video.play().catch(() => useCinevo.setState({ playing: false }));
+      return;
+    }
+    if (video && file) {
+      if (video.paused) {
+        useCinevo.setState({ playing: true });
+        void video.play().catch(() => useCinevo.setState({ playing: false }));
+      } else {
+        video.pause();
+        useCinevo.setState({ playing: false });
+      }
+      return;
+    }
+    if (progress >= 100) play(title.id);
+    else togglePlay();
+  };
+
+  useEffect(() => {
+    if (!title) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== " ") return;
+      const tag = (e.target as HTMLElement | null)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      e.preventDefault();
+      onToggle();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // onToggle closes over current video/progress
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [title, file, progress, playing]);
+
+  if (!title) return null;
 
   const missing =
     !file &&
@@ -64,8 +105,6 @@ export function Player() {
       : title.source === "plex" || title.source === "jellyfin"
         ? "Open this title on your server. CINEVO does not proxy playback."
         : "No playable file on this device.");
-
-  const onToggle = () => (progress >= 100 ? play(title.id) : togglePlay());
 
   return (
     <div
@@ -85,7 +124,12 @@ export function Player() {
           autoPlay
           muted={muted}
           onLoadedData={(e) => {
-            if (playing) void e.currentTarget.play().catch(() => useCinevo.setState({ playing: false }));
+            const v = e.currentTarget;
+            v.muted = muted;
+            if (progress > 0 && progress < 100 && Number.isFinite(v.duration)) {
+              v.currentTime = (progress / 100) * v.duration;
+            }
+            if (playing) void v.play().catch(() => useCinevo.setState({ playing: false }));
           }}
           onTimeUpdate={(e) => {
             const v = e.currentTarget;
@@ -95,6 +139,7 @@ export function Player() {
           onEnded={() => {
             setProgress(title.id, 100);
             useCinevo.setState({ playing: false });
+            setChrome(true);
           }}
         />
       ) : (
@@ -130,6 +175,9 @@ export function Player() {
         ) : (
           <p className="max-w-md text-center font-ui text-sm text-cine-muted">{missing}</p>
         )}
+        {file && muted && playing ? (
+          <p className="font-ui text-xs uppercase tracking-[0.22em] text-cine-muted">Sound off · unmute in the bar</p>
+        ) : null}
       </div>
       <section
         className={`absolute inset-x-0 bottom-0 z-10 space-y-3 p-5 transition-opacity ${
@@ -176,7 +224,11 @@ export function Player() {
                   type="button"
                   aria-label={muted ? "Unmute" : "Mute"}
                   className="flex size-11 items-center justify-center"
-                  onClick={() => setMuted((m) => !m)}
+                  onClick={() => {
+                    const next = !muted;
+                    setMuted(next);
+                    if (videoRef.current) videoRef.current.muted = next;
+                  }}
                 >
                   {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
                 </button>

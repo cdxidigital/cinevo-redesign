@@ -110,23 +110,23 @@ export function makePoster(title: string, accent: Accent) {
   c.height = 600;
   const ctx = c.getContext("2d");
   if (!ctx) return "/stills/theater.jpg";
-  const colors: Record<Accent, [string, string]> = {
-    cyan: ["#04161c", "#00e5ff"],
-    magenta: ["#1a0614", "#ff2e9a"],
-    violet: ["#12081c", "#b44cff"],
-    amber: ["#1a1206", "#ffb020"],
+  const ink: Record<Accent, string> = {
+    cyan: "#f5f5f5",
+    magenta: "#3b7bff",
+    violet: "#8aa0c4",
+    amber: "#d6d0c4",
   };
-  const [bg, fg] = colors[accent];
-  ctx.fillStyle = bg;
+  ctx.fillStyle = "#0b0b0b";
   ctx.fillRect(0, 0, 400, 600);
-  ctx.strokeStyle = fg;
-  ctx.globalAlpha = 0.35;
-  ctx.lineWidth = 2;
+  ctx.strokeStyle = "rgba(255,255,255,0.16)";
+  ctx.lineWidth = 1;
   ctx.strokeRect(18, 18, 364, 564);
-  ctx.globalAlpha = 1;
-  ctx.fillStyle = fg;
-  ctx.font = "600 28px Rajdhani, Inter, sans-serif";
-  wrapText(ctx, title, 36, 280, 328, 34);
+  ctx.fillStyle = ink[accent] || "#f5f5f5";
+  ctx.font = "800 28px Inter, system-ui, sans-serif";
+  wrapText(ctx, title, 36, 250, 328, 34);
+  ctx.fillStyle = "rgba(255,255,255,0.35)";
+  ctx.font = "700 12px Inter, system-ui, sans-serif";
+  ctx.fillText("CINEVO", 36, 560);
   return c.toDataURL("image/jpeg", 0.85);
 }
 
@@ -170,7 +170,7 @@ export function remoteTitle(input: {
     rating: 0,
     addedAt: new Date().toISOString().slice(0, 10),
     poster: makePoster(input.title, accent),
-    still: "/stills/neon-alley.jpg",
+    still: "/stills/theater.jpg",
     accent,
     source: input.source,
     sourceLabel: input.sourceLabel,

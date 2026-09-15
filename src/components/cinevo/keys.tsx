@@ -14,10 +14,6 @@ export function Keys() {
       const s = useCinevo.getState();
       if (s.playingId) {
         if (e.key === "Escape") s.stopPlay();
-        else if (e.key === " " && !isTyping(e.target)) {
-          e.preventDefault();
-          s.togglePlay();
-        }
         return;
       }
       if (e.key === "Escape") {
