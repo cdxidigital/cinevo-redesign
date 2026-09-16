@@ -8,10 +8,9 @@ export function applySourceFilter(
   local: LibraryTitle[],
   remote: LibraryTitle[],
 ): Title[] {
-  if (filter === "folder") return local;
-  if (filter === "plex") return remote.filter((t) => t.source === "plex");
-  if (filter === "jellyfin") return remote.filter((t) => t.source === "jellyfin");
-  return [...local, ...remote];
+  const all = [...local, ...remote];
+  if (filter === "all") return all;
+  return all.filter((t) => t.source === filter);
 }
 
 export function useLibrary() {

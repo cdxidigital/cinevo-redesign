@@ -1,15 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowDownRight, ArrowRight, Check, Play, ShieldCheck, Sparkles } from "lucide-react";
 import { InstallerCards } from "@/components/cinevo/installers";
-import { Logo } from "@/components/cinevo/logo";
+import { Logo, Mark } from "@/components/cinevo/logo";
+import { LandingAuth } from "@/components/cinevo/account";
 
 export const Route = createFileRoute("/")({ component: Home });
 
 const NAV = [
-  { label: "Home", href: "/" },
   { label: "Your library", to: "/app" as const },
   { label: "Node", to: "/node" as const },
-  { label: "CINEVO Core", href: "/app" },
 ];
 
 const STEPS = [
@@ -31,7 +30,7 @@ const HIGHLIGHTS = [
     n: "02",
     eyebrow: "FRIEND SHARING",
     title: "Share with care, never by default.",
-    description: "Create time-bound, revocable invitations. The owner’s boundary is visible at every step.",
+    description: "Invite by CINEVO username. Share Plex and Jellyfin catalogs — never the files. Playback stays on the original server.",
     action: "Manage sharing",
     to: "/app" as const,
   },
@@ -61,22 +60,14 @@ function Home() {
           <Logo size="md" />
         </Link>
         <nav aria-label="Homepage">
-          {NAV.map((item) =>
-            item.to ? (
-              <Link key={item.label} to={item.to}>
-                {item.label}
-              </Link>
-            ) : (
-              <a key={item.label} href={item.href}>
-                {item.label}
-              </a>
-            ),
-          )}
+          {NAV.map((item) => (
+            <Link key={item.label} to={item.to}>
+              {item.label}
+            </Link>
+          ))}
         </nav>
         <div className="public-nav__actions">
-          <Link to="/app" className="public-nav__enter">
-            Enter CINEVO <ArrowRight size={14} />
-          </Link>
+          <LandingAuth />
         </div>
       </header>
 
@@ -84,7 +75,9 @@ function Home() {
         <section className="public-hero" aria-labelledby="public-hero-title">
           <img src="/stills/hero-theater.jpg" alt="" className="public-hero__still" />
           <div className="public-hero__veil" />
-          <div className="public-hero__orb" />
+          <div className="public-hero__orb" aria-hidden="true">
+            <Mark className="public-hero__gem" />
+          </div>
           <div className="public-hero__content">
             <span className="public-kicker">
               <i /> PRIVATE BY DESIGN
@@ -95,15 +88,15 @@ function Home() {
               <em>Your moment.</em>
             </h1>
             <p>
-              CINEVO brings the libraries you control into a considered cinematic space — built around your collection,
-              the people you trust, and choices you can always reverse.
+              CINEVO brings the libraries you control into a considered cinematic space — folders, Plex, and Jellyfin,
+              shared by username with people you trust.
             </p>
             <div className="public-hero__actions">
               <Link to="/app" className="public-primary">
                 <Play size={15} fill="currentColor" /> Enter CINEVO
               </Link>
-              <Link to="/app" className="public-secondary">
-                Open your library <ArrowDownRight size={16} />
+              <Link to="/login" search={{ mode: "up" }} className="public-secondary">
+                Create account <ArrowDownRight size={16} />
               </Link>
             </div>
           </div>
@@ -163,7 +156,7 @@ function Home() {
               <Check size={17} />
               <span>
                 <b>Keep sharing intentional</b>
-                <small>Set library scope and expiry before every invite.</small>
+                <small>Invite by username. Share the catalog, not the files.</small>
               </span>
             </div>
             <div>
@@ -203,7 +196,7 @@ function Home() {
         <section className="home-downloads" id="downloads">
           <span className="public-kicker">CINEVO NODE</span>
           <h2 className="mt-4 font-display text-4xl font-bold tracking-tight md:text-5xl">The projector lives at home.</h2>
-          <p className="mt-4 mb-10 max-w-xl text-sm text-[#a9a1ae]">
+          <p className="mt-4 mb-10 max-w-xl text-sm text-cine-muted">
             Install Node on the computer that holds the files. Pair once. Jellyfin and disk paths stay on loopback.
           </p>
           <InstallerCards />
@@ -220,7 +213,7 @@ function Home() {
             </h2>
           </div>
           <div>
-            <p>Connect the library you trust. Choose what CINEVO knows. Then settle in.</p>
+            <p>Connect the library you trust. Claim a username. Then settle in.</p>
             <Link to="/app" className="public-primary">
               Begin with your library <ArrowRight size={16} />
             </Link>

@@ -1,0 +1,164 @@
+import { createFileRoute, Link, Navigate, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { GROK_PROVIDERS, authClient, authEnabled, signIn } from "@/lib/auth/client";
+import { Logo } from "@/components/cinevo/logo";
+import { claimUsername } from "@/lib/sharing";
+import { useCurrentUserState } from "@/lib/auth/use-current-user";
+
+export const Route = createFileRoute("/login")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    mode: search.mode === "up" ? ("up" as const) : ("in" as const),
+  }),
+  component: Login,
+});
+
+function Login() {
+  const nav = useNavigate();
+  const { mode: initial } = Route.useSearch();
+  const { user, isPending } = useCurrentUserState();
+  const [mode, setMode] = useState<"in" | "up">(initial);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
+
+  useEffect(() => {
+    setMode(initial);
+  }, [initial]);
+
+  if (!isPending && user && !user.isDevFallback) {
+    return <Navigate to="/app" />;
+  }
+
+  const afterEmail = async (name: string) => {
+    if (name.trim()) {
+      try {
+        await claimUsername({ data: { username: name.trim(), display: name.trim() } });
+      } catch {
+        /* UsernameGate will retry on /app */
+      }
+    }
+    void nav({ to: "/app" });
+  };
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setPending(true);
+    try {
+      if (mode === "up") {
+        const { error: err } = await authClient.signUp.email({
+          email: email.trim(),
+          password,
+          name: username.trim() || email.split("@")[0],
+        });
+        if (err) {
+          setError(err.message || "Could not create that account.");
+          return;
+        }
+        await afterEmail(username);
+      } else {
+        const { error: err } = await authClient.signIn.email({ email: email.trim(), password });
+        if (err) {
+          setError(err.message || "Email or password did not match.");
+          return;
+        }
+        void nav({ to: "/app" });
+      }
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Sign-in failed.");
+    } finally {
+      setPending(false);
+    }
+  };
+
+  return (
+    <main className="login-stage">
+      <div className="login-card">
+        <Link to="/" className="mb-8 inline-flex">
+          <Logo size="lg" tagline={false} />
+        </Link>
+        <p className="font-display text-[10px] font-extrabold tracking-[0.22em] text-cine-cyan">PRIVATE CINEMA</p>
+        <h1 className="mt-3 font-display text-4xl font-bold tracking-tight">
+          {mode === "up" ? "Create your house." : "Take your seat."}
+        </h1>
+        <p className="mt-3 text-sm text-cine-muted">
+          A username lets friends share Plex and Jellyfin catalogs with you. Folders still work without an account.
+        </p>
+
+        {authEnabled ? (
+          <>
+            <div className="mt-8 grid gap-2">
+              {GROK_PROVIDERS.map((p) => (
+                <button
+                  key={p.providerId}
+                  type="button"
+                  onClick={() => signIn(p.providerId, { callbackURL: "/app" })}
+                  className="h-12 rounded-xl border border-cine-border bg-cine-elevated font-ui text-sm font-bold hover:border-cine-cyan"
+                >
+                  Continue with {p.label}
+                </button>
+              ))}
+            </div>
+            <p className="my-5 text-center font-ui text-[11px] uppercase tracking-[0.18em] text-cine-faint">or email</p>
+            <form onSubmit={(e) => void submit(e)} className="grid gap-3">
+              {mode === "up" ? (
+                <input
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Username"
+                  autoComplete="username"
+                  aria-label="Username"
+                  required
+                  minLength={3}
+                  maxLength={20}
+                  pattern="[A-Za-z][A-Za-z0-9_]{2,19}"
+                  title="3–20 letters, numbers, or underscores, starting with a letter"
+                  className="h-12 rounded-xl border border-cine-border bg-cine-well px-4 font-ui"
+                />
+              ) : null}
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                autoComplete="email"
+                required
+                aria-label="Email"
+                className="h-12 rounded-xl border border-cine-border bg-cine-well px-4 font-ui"
+              />
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                autoComplete={mode === "up" ? "new-password" : "current-password"}
+                required
+                minLength={8}
+                aria-label="Password"
+                className="h-12 rounded-xl border border-cine-border bg-cine-well px-4 font-ui"
+              />
+              {error ? <p className="text-sm text-cine-danger">{error}</p> : null}
+              <button type="submit" disabled={pending} className="house-btn house-btn--play h-12 w-full">
+                {pending ? "Working…" : mode === "up" ? "Create account" : "Sign in"}
+              </button>
+            </form>
+            <button
+              type="button"
+              className="mt-5 font-ui text-sm text-cine-cyan"
+              onClick={() => {
+                setMode(mode === "up" ? "in" : "up");
+                setError("");
+              }}
+            >
+              {mode === "up" ? "Already have a house? Sign in" : "New here? Create an account"}
+            </button>
+          </>
+        ) : (
+          <p className="mt-8 text-sm text-cine-muted">Sign-in is disabled.</p>
+        )}
+      </div>
+    </main>
+  );
+}

@@ -20,6 +20,7 @@ const SOURCES: [SourceFilter, string][] = [
   ["folder", "Folders"],
   ["plex", "Plex"],
   ["jellyfin", "Jellyfin"],
+  ["shared", "Shared"],
 ];
 
 function HeroActions({
@@ -62,7 +63,7 @@ function PlatformArc() {
     },
     {
       title: "Friend sharing",
-      copy: "Invite-only access with a name, a window, and a revoke button.",
+      copy: "Invite by username. Share Plex and Jellyfin catalogs — playback stays on the original server.",
       action: "Share",
       onClick: () => setCoreOpen(true, "sharing"),
     },
@@ -116,27 +117,24 @@ export function StageRoom() {
   const aiConsent = useCinevo((s) => s.aiConsent);
   const sourceFilter = useCinevo((s) => s.sourceFilter);
   const setSourceFilter = useCinevo((s) => s.setSourceFilter);
+  const setMood = useCinevo((s) => s.setMood);
   const sources = useCinevo((s) => s.sources);
+  const hydrated = useCinevo((s) => s.hydrated);
   const library = useLibrary();
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [pending, setPending] = useState(false);
 
-  const filtered = useMemo(() => {
-    if (sourceFilter === "all") return library;
-    return library.filter((t) => t.source === sourceFilter);
-  }, [library, sourceFilter]);
-
-  const pool = byMood(mood, filtered);
-  const hero = pickFeatured({ mood, progress, tonight, pool: filtered });
+  const pool = byMood(mood, library);
+  const hero = pickFeatured({ mood, progress, tonight, pool: library });
   const heroProgress = hero ? progress[hero.id] ?? 0 : 0;
-  const continueWatching = filtered.filter((t) => {
+  const continueWatching = library.filter((t) => {
     const p = progress[t.id];
     return p != null && p > 0 && p < 100;
   });
   const added = recentlyAdded(8, pool);
   const addedIds = new Set(added.map((t) => t.id));
-  const myList = filtered.filter((t) => favorites.includes(t.id));
+  const myList = library.filter((t) => favorites.includes(t.id));
   const suggestions = pool.filter((t) => !favorites.includes(t.id) && !addedIds.has(t.id)).slice(0, 8);
   const moodMeta = MOODS.find((m) => m.id === mood) ?? MOODS[0];
   const queued = tonight
@@ -213,16 +211,21 @@ export function StageRoom() {
           ) : (
             <>
               <p className="lede">
-                Start with a folder on this computer, or sign in with Plex to see every server on your account — home,
-                shared, remote.
+                {hydrated
+                  ? "Start with a folder on this computer, sign in with Plex, or pair Node for Jellyfin. Share catalogs with a CINEVO username — playback stays on the original server."
+                  : "Opening your house…"}
               </p>
-              <HeroActions
-                onPlay={() => setRoom("sidebar")}
-                playLabel="Add library"
-                playIcon={false}
-                onMore={() => setCoreOpen(true, "libraries")}
-                moreLabel="Open Core"
-              />
+              {hydrated ? (
+                <HeroActions
+                  onPlay={() => setRoom("sidebar")}
+                  playLabel="Add library"
+                  playIcon={false}
+                  onMore={() => setCoreOpen(true, "libraries")}
+                  moreLabel="Open Core"
+                />
+              ) : (
+                <div className="mt-8 h-11 w-48 animate-pulse rounded-md bg-cine-surface" />
+              )}
             </>
           )}
         </div>
@@ -247,6 +250,21 @@ export function StageRoom() {
                 ))}
               </div>
             ) : null}
+
+            <div className="house-sources" role="tablist" aria-label="Mood">
+              {MOODS.map((m) => (
+                <button
+                  key={m.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={mood === m.id}
+                  onClick={() => setMood(m.id)}
+                  className={mood === m.id ? "house-chip is-on" : "house-chip"}
+                >
+                  {m.label}
+                </button>
+              ))}
+            </div>
 
             <div className="house-board">
               <aside className="house-panel">

@@ -13,9 +13,9 @@ var install_page_default = "<!DOCTYPE html>\n<html lang=\"en\" class=\"device-de
 //#region \0virtual:grok-og-identity
 var grokOgIdentity = { "site": {
 	"title": "CINEVO",
-	"description": "Cinema, reinvented. Your library. No ads. No subscriptions.",
+	"description": "Your media. Your moment. Private cinema for Plex, Jellyfin, and home folders.",
 	"card": "custom",
-	"color": "0B0B0B",
+	"color": "1A1A1E",
 	"image": "/og.jpg",
 	"banner": "/x-banner.jpg"
 } };

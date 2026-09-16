@@ -1553,7 +1553,16 @@ html[data-theme="iris"] .house-ambient {
   border-bottom: 4px solid transparent;
   border-left: 6px solid var(--color-cine-violet);
 }
+.brand__gem {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  display: block;
+}
 .top-nav__brand .brand b { font-size: 14px; }
+.top-nav__brand .brand__gem { width: 22px; height: 22px; }
+.public-brand .brand__gem { width: 36px; height: 36px; }
+.public-brand .brand b { font-size: 22px; letter-spacing: 0.16em; }
 .poster-wash {
   pointer-events: none;
   position: absolute;
@@ -1589,12 +1598,17 @@ html[data-theme="iris"] .house-ambient {
 .public-nav__actions { display: flex; justify-content: flex-end; align-items: center; gap: 10px; }
 .public-nav__enter {
   display: inline-flex; gap: 8px; align-items: center; justify-self: end;
-  min-height: 44px; padding: 0 14px; border: 1px solid rgba(12,205,246,.42);
-  border-radius: 99px; background: rgba(12,205,246,.08); color: #c5f3ff;
+  min-height: 44px; padding: 0 14px; border: 0;
+  border-radius: 99px; background: linear-gradient(100deg, #55CFFF, #8B2FFF 55%, #FF4DA5); color: #fff;
   font-size: 11px; font-weight: 700; text-decoration: none;
-  transition: transform 180ms var(--ease-cine), background 180ms var(--ease-cine);
+  transition: transform 180ms var(--ease-cine), filter 180ms var(--ease-cine);
 }
-.public-nav__enter:hover { background: rgba(12,205,246,.16); transform: scale(1.03); }
+.public-nav__enter:hover { filter: brightness(1.08); transform: scale(1.03); }
+.public-nav__signin {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px;
+  color: #c9c2cd; font-size: 12px; font-weight: 700; text-decoration: none;
+}
+.public-nav__signin:hover { color: #fff; }
 .public-hero {
   position: relative; display: flex; min-height: min(800px, 100vh); align-items: flex-end;
   padding: 130px clamp(22px, 7vw, 108px) 100px; isolation: isolate;
@@ -1615,9 +1629,15 @@ html[data-theme="iris"] .house-ambient {
 }
 .public-hero__orb {
   position: absolute; z-index: -2; top: 23%; right: 7vw;
+  display: grid; place-items: center;
   width: min(36vw, 540px); aspect-ratio: 1;
   border: 1px solid rgba(175,128,255,.18); border-radius: 50%;
   box-shadow: 0 0 160px 50px rgba(101,44,179,.12);
+}
+.public-hero__gem {
+  width: min(22vw, 280px);
+  height: min(22vw, 280px);
+  filter: drop-shadow(0 18px 40px rgb(139 47 255 / 40%));
 }
 .public-hero__content { max-width: 720px; animation: cine-rise 450ms var(--ease-cine) both; }
 .public-kicker {
@@ -1764,4 +1784,71 @@ html[data-theme="iris"] .house-ambient {
   .home-closing { gap: 30px; margin-top: 80px; padding: 60px 0; }
   .public-footer { align-items: start; flex-direction: column; }
 }
+
+.cinevo-account {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  max-width: 100%;
+  padding: 0 10px 0 6px;
+  border: 1px solid var(--color-cine-line);
+  border-radius: 999px;
+  background: var(--color-cine-elevated);
+  color: var(--color-cine-text);
+  white-space: nowrap;
+}
+.cinevo-account > div {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.cinevo-account img,
+.cinevo-account span.grid {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+}
+.cinevo-account span.text-sm {
+  display: none;
+}
+.cinevo-account button {
+  flex: 0 0 auto;
+  color: var(--color-cine-cyan);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  opacity: 1;
+}
+.cinevo-account button:hover {
+  text-decoration: underline;
+}
+
+.login-stage {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 4rem 1.25rem;
+  background:
+    radial-gradient(circle at 78% 18%, rgb(139 47 255 / 22%), transparent 32%),
+    radial-gradient(circle at 12% 80%, rgb(255 77 165 / 12%), transparent 28%),
+    var(--color-cine-bg);
+  color: var(--color-cine-text);
+}
+.login-card {
+  width: 100%;
+  max-width: 28rem;
+}
+
+html[data-theme="iris"] .house-kicker {
+  color: #5b3d9c;
+}
+html[data-theme="iris"] .top-nav {
+  background: rgb(255 255 255 / 78%);
+}
+
 

@@ -1,9 +1,10 @@
-import { Menu, Search, Settings2, X } from "lucide-react";
+import { Bell, Menu, Search, Settings2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useCinevo, type Room } from "@/lib/cinevo-store";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
+import { AuthSlot, UsernameGate } from "./account";
 
 const NAV: { id: Room; label: string }[] = [
   { id: "stage", label: "Home" },
@@ -24,8 +25,16 @@ export function Shell({
   const setSearchOpen = useCinevo((s) => s.setSearchOpen);
   const setSettingsOpen = useCinevo((s) => s.setSettingsOpen);
   const setCoreOpen = useCinevo((s) => s.setCoreOpen);
+  const setNoticesOpen = useCinevo((s) => s.setNoticesOpen);
+  const unread = useCinevo((s) => s.notices.filter((n) => !n.readAt).length);
   const night = useCinevo((s) => s.prefs.nightMode);
   const zen = useCinevo((s) => s.prefs.zenMode);
+  const searchOpen = useCinevo((s) => s.searchOpen);
+  const settingsOpen = useCinevo((s) => s.settingsOpen);
+  const coreOpen = useCinevo((s) => s.coreOpen);
+  const noticesOpen = useCinevo((s) => s.noticesOpen);
+  const selectedId = useCinevo((s) => s.selectedId);
+  const playingId = useCinevo((s) => s.playingId);
   const [drawer, setDrawer] = useState(false);
 
   useEffect(() => {
@@ -44,6 +53,16 @@ export function Shell({
       window.removeEventListener("keydown", onKey);
     };
   }, [drawer]);
+
+  const overlayOpen = Boolean(searchOpen || settingsOpen || coreOpen || noticesOpen || selectedId || playingId);
+  useEffect(() => {
+    if (!overlayOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [overlayOpen]);
 
   const go = (id: Room) => {
     setRoom(id);
@@ -88,12 +107,24 @@ export function Shell({
           </button>
           <button
             type="button"
+            aria-label={unread ? `${unread} unread notices` : "Notices"}
+            className="top-nav__icon relative"
+            onClick={() => setNoticesOpen(true)}
+          >
+            <Bell size={18} />
+            {unread ? (
+              <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-cine-magenta" aria-hidden="true" />
+            ) : null}
+          </button>
+          <button
+            type="button"
             aria-label="Settings"
             className="top-nav__icon"
             onClick={() => setSettingsOpen(true)}
           >
             <Settings2 size={18} />
           </button>
+          <AuthSlot className="max-md:hidden" />
         </div>
       </header>
 
@@ -131,13 +162,27 @@ export function Shell({
               >
                 Core
               </button>
+              <button
+                type="button"
+                className="flex h-11 w-full items-center rounded-md px-3 font-ui text-sm font-medium text-cine-muted"
+                onClick={() => {
+                  setNoticesOpen(true);
+                  setDrawer(false);
+                }}
+              >
+                Notices{unread ? ` (${unread})` : ""}
+              </button>
             </nav>
+            <div className="mt-6">
+              <AuthSlot />
+            </div>
           </aside>
         </div>
       ) : null}
 
       <main className={cn("house-main", room !== "stage" && "house-main--page")}>{children}</main>
       {overlays}
+      <UsernameGate />
     </div>
   );
 }

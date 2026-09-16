@@ -22,10 +22,13 @@ function NodePairing() {
 
   const ping = async () => {
     setLoading(true);
-    const res = await checkNode(nodeUrl || DEFAULT_NODE);
-    setLoading(false);
-    setOk(res.ok);
-    setMessage(res.ok ? "CINEVO Node is ready. Enter the code from its dashboard." : res.error);
+    try {
+      const res = await checkNode(nodeUrl || DEFAULT_NODE);
+      setOk(res.ok);
+      setMessage(res.ok ? "CINEVO Node is ready. Enter the code from its dashboard." : res.error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const pair = async () => {
@@ -34,33 +37,38 @@ function NodePairing() {
       return;
     }
     setLoading(true);
-    const res = await pairNode(nodeUrl || DEFAULT_NODE, code);
-    if (!res.ok) {
+    try {
+      const res = await pairNode(nodeUrl || DEFAULT_NODE, code);
+      if (!res.ok) {
+        setOk(false);
+        setMessage(res.error);
+        return;
+      }
+      setNodeSession(res.token, res.deviceId);
+      const st = await nodeStatus(nodeUrl || DEFAULT_NODE, res.token);
+      if (st.ok) setStatus(st.status);
+      setOk(true);
+      setMessage("Paired for a short local session. Media-server credentials stay in CINEVO Node.");
+    } finally {
       setLoading(false);
-      setOk(false);
-      setMessage(res.error);
-      return;
     }
-    setNodeSession(res.token, res.deviceId);
-    const st = await nodeStatus(nodeUrl || DEFAULT_NODE, res.token);
-    setLoading(false);
-    if (st.ok) setStatus(st.status);
-    setOk(true);
-    setMessage("Paired for a short local session. Media-server credentials stay in CINEVO Node.");
   };
 
   const refresh = async () => {
     if (!nodeToken) return;
     setLoading(true);
-    const st = await nodeStatus(nodeUrl || DEFAULT_NODE, nodeToken);
-    setLoading(false);
-    if (!st.ok) {
-      clearNodeSession();
-      setStatus(null);
-      setMessage(st.error);
-      return;
+    try {
+      const st = await nodeStatus(nodeUrl || DEFAULT_NODE, nodeToken);
+      if (!st.ok) {
+        clearNodeSession();
+        setStatus(null);
+        setMessage(st.error);
+        return;
+      }
+      setStatus(st.status);
+    } finally {
+      setLoading(false);
     }
-    setStatus(st.status);
   };
 
   const remove = async (id: string) => {

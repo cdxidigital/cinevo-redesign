@@ -103,13 +103,14 @@ export function AddLibrary() {
           genre: "Home library",
         }),
       );
-      addFolderTitles(
+      addRemoteTitles(
         titles.map((t) => ({
           ...t,
           source: "folder",
           sourceLabel: res.name,
           genre: "Home library",
           genres: ["Home library", res.name],
+          synopsis: `Indexed from ${res.name} on CINEVO Node. Playback stays on that computer.`,
         })),
         { id: res.id, kind: "folder", name: res.name, path: folderPath.trim(), selected: true, count: res.count },
       );

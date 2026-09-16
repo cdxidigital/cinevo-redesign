@@ -2,7 +2,7 @@ import type { Accent, Kind, Title } from "./catalog";
 
 export const VIDEO_EXT = /\.(mp4|mkv|mov|avi|webm|m4v|wmv|ts|m2ts)$/i;
 
-export type SourceKind = "cinevo" | "folder" | "plex" | "jellyfin";
+export type SourceKind = "cinevo" | "folder" | "plex" | "jellyfin" | "shared";
 
 export type LibSource = {
   id: string;
@@ -36,6 +36,18 @@ export function rememberBlob(id: string, file: File) {
   const url = URL.createObjectURL(file);
   blobs.set(id, url);
   return url;
+}
+
+export function forgetBlob(id: string) {
+  const prev = blobs.get(id);
+  if (!prev) return;
+  URL.revokeObjectURL(prev);
+  blobs.delete(id);
+}
+
+export function forgetAllBlobs() {
+  for (const url of blobs.values()) URL.revokeObjectURL(url);
+  blobs.clear();
 }
 
 export function parseFilename(fileName: string) {
@@ -151,19 +163,20 @@ export function remoteTitle(input: {
   year?: string;
   kind?: Kind;
   synopsis?: string;
-  source: "plex" | "jellyfin";
+  source: "plex" | "jellyfin" | "shared";
   sourceLabel: string;
   genre?: string;
 }): LibraryTitle {
-  const accent: Accent = input.source === "plex" ? "amber" : "violet";
+  const accent: Accent = input.source === "plex" ? "amber" : input.source === "shared" ? "magenta" : "violet";
+  const label = input.source === "plex" ? "Plex" : input.source === "jellyfin" ? "Jellyfin" : "Shared";
   return {
     id: input.id,
     title: input.title,
     kind: input.kind ?? "movie",
     year: input.year || "—",
     runtime: "—",
-    genre: input.genre || (input.source === "plex" ? "Plex" : "Jellyfin"),
-    genres: [input.source === "plex" ? "Plex" : "Jellyfin"],
+    genre: input.genre || label,
+    genres: [label, input.sourceLabel],
     synopsis: input.synopsis || `Indexed from ${input.sourceLabel}. Playback stays on your media server.`,
     cast: [],
     director: input.sourceLabel,
@@ -178,10 +191,10 @@ export function remoteTitle(input: {
 }
 
 export const THEMES = [
-  { id: "pulse", label: "Night", accent: "#f5f5f5" },
-  { id: "nova", label: "Rebound", accent: "#3b7bff" },
-  { id: "iris", label: "Paper", accent: "#ecece8" },
-  { id: "ember", label: "Studio", accent: "#d6d0c4" },
+  { id: "pulse", label: "Night", accent: "#8B2FFF" },
+  { id: "nova", label: "Cyan", accent: "#55CFFF" },
+  { id: "iris", label: "Paper", accent: "#f7f5fa" },
+  { id: "ember", label: "Pink", accent: "#FF4DA5" },
 ] as const;
 
 export type ThemeId = (typeof THEMES)[number]["id"];

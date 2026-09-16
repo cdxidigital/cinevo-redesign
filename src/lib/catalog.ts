@@ -18,7 +18,7 @@ export type Title = {
   still: string;
   accent: Accent;
   live?: boolean;
-  source?: "cinevo" | "folder" | "plex" | "jellyfin";
+  source?: "cinevo" | "folder" | "plex" | "jellyfin" | "shared";
   sourceLabel?: string;
   path?: string;
 };

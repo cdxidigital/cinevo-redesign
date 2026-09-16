@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/login",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 225,
+      "bodyTextHash": "c18b8d9e113e07adcf7f94e470fe97113e58e3f9bef9d343bbd39fd55f3a9a2b",
+      "bodyTextPrefix": "CINEVO PRIVATE CINEMA Take your seat. A username lets friends sh",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-login.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 225,
+      "bodyTextHash": "c18b8d9e113e07adcf7f94e470fe97113e58e3f9bef9d343bbd39fd55f3a9a2b",
+      "bodyTextPrefix": "CINEVO PRIVATE CINEMA Take your seat. A username lets friends sh",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-login-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/cinevo-login.json"
+}

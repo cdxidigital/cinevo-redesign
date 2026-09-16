@@ -17,7 +17,7 @@ export const askCinevo = createServerFn({ method: "POST" })
 
     const titles = data.titles ?? [];
     if (!titles.length) {
-      return { ok: true as const, text: "Your library is empty. Add a folder or pair CINEVO Node, then ask again." };
+      return { ok: true as const, text: "Your library is empty. Add a folder or sign in with Plex, then ask again." };
     }
 
     const apiKey = process.env.XAI_API_KEY;

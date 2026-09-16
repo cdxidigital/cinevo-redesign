@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { Expand, Pause, Play, Subtitles, Volume2, VolumeX, X } from "lucide-react";
 import { titleById, useCinevo } from "@/lib/cinevo-store";
 import { mediaUrl } from "@/lib/library";
+import { reconnectFolders } from "@/lib/folder-handles";
+import { bumpWatch } from "@/lib/sharing";
+import { useCurrentUser } from "@/lib/auth/use-current-user";
 
 export function Player() {
   const playingId = useCinevo((s) => s.playingId);
@@ -13,6 +16,7 @@ export function Player() {
   const stopPlay = useCinevo((s) => s.stopPlay);
   const setProgress = useCinevo((s) => s.setProgress);
   const flash = useCinevo((s) => s.flash);
+  const user = useCurrentUser();
   const title = titleById(playingId);
   const videoRef = useRef<HTMLVideoElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -47,6 +51,11 @@ export function Player() {
       window.removeEventListener("touchstart", bump);
     };
   }, [playing, file]);
+
+  useEffect(() => {
+    if (!playingId || !user || user.isDevFallback) return;
+    void bumpWatch().catch(() => undefined);
+  }, [playingId, user]);
 
   const seek = (value: number) => {
     if (!title) return;
@@ -101,10 +110,12 @@ export function Player() {
   const missing =
     !file &&
     (title.source === "folder"
-      ? "Re-select this folder to play. CINEVO does not store the file."
-      : title.source === "plex" || title.source === "jellyfin"
-        ? "Open this title on your server. CINEVO does not proxy playback."
-        : "No playable file on this device.");
+      ? "Folder playback needs a folder picked in this browser. Node scans are an index only."
+      : title.source === "shared"
+        ? "Shared libraries are an index only. Playback stays on the original Plex or Jellyfin server."
+        : title.source === "plex" || title.source === "jellyfin"
+          ? "Open this title on your server. CINEVO does not proxy playback."
+          : "No playable file on this device.");
 
   return (
     <div
@@ -173,7 +184,29 @@ export function Player() {
             {playing ? <Pause size={26} fill="currentColor" /> : <Play size={26} fill="currentColor" />}
           </span>
         ) : (
-          <p className="max-w-md text-center font-ui text-sm text-cine-muted">{missing}</p>
+          <div className="pointer-events-auto max-w-md text-center">
+            <p className="font-ui text-sm text-cine-muted">{missing}</p>
+            {title.source === "folder" ? (
+              <button
+                type="button"
+                className="house-btn house-btn--play mt-4"
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  const n = await reconnectFolders();
+                  if (n) {
+                    useCinevo.setState({ localTitles: [...useCinevo.getState().localTitles] });
+                    flash(`Reconnected ${n} files`);
+                  } else {
+                    flash("Re-select the folder in Library");
+                    useCinevo.getState().setRoom("sidebar");
+                    stopPlay();
+                  }
+                }}
+              >
+                Reconnect folder
+              </button>
+            ) : null}
+          </div>
         )}
         {file && muted && playing ? (
           <p className="font-ui text-xs uppercase tracking-[0.22em] text-cine-muted">Sound off · unmute in the bar</p>

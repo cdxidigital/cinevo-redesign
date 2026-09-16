@@ -21,7 +21,7 @@ export type Preferences = {
   dashboardWidgets: DashboardWidgetId[];
 };
 
-export type SourceFilter = "all" | "folder" | "plex" | "jellyfin";
+export type SourceFilter = "all" | "folder" | "plex" | "jellyfin" | "shared";
 
 export type Invite = {
   id: string;
@@ -75,6 +75,7 @@ type CinevoState = {
   coreOpen: boolean;
   coreTab: CoreTab;
   noticesOpen: boolean;
+  hydrated: boolean;
   toast: string;
   prefs: Preferences;
   libraries: Library[];
@@ -230,6 +231,7 @@ export const useCinevo = create<CinevoState>()(
       coreOpen: false,
       coreTab: "libraries",
       noticesOpen: false,
+      hydrated: false,
       toast: "",
       prefs: DEFAULT_PREFS,
       libraries: [],
@@ -430,16 +432,20 @@ export const useCinevo = create<CinevoState>()(
       addRemoteTitles: (titles, source) => {
         const existing = new Set(get().remoteTitles.map((t) => t.id));
         const next = titles.filter((t) => !existing.has(t.id));
+        const merged = [...next, ...get().remoteTitles].slice(0, 300);
         const sources = get().sources.filter((s) => s.id !== source.id);
+        const count = merged.filter((t) => t.source === source.kind && (t.sourceLabel === source.name || t.sourceLabel.startsWith(`${source.name.replace(/^@/, "")} ·`))).length || next.length;
         set({
-          remoteTitles: [...next, ...get().remoteTitles].slice(0, 300),
-          sources: [{ ...source, count: next.length }, ...sources],
+          remoteTitles: merged,
+          sources: [{ ...source, count: count || next.length }, ...sources],
         });
         get().flash(next.length ? `Imported ${next.length} titles from ${source.name}` : "No titles in that section");
         if (next.length) {
+          const kindLabel =
+            source.kind === "plex" ? "Plex" : source.kind === "jellyfin" ? "Jellyfin" : source.kind === "shared" ? "Shared" : "Library";
           get().notify({
             category: "library",
-            title: `${source.kind === "plex" ? "Plex" : "Jellyfin"} library imported`,
+            title: `${kindLabel} library imported`,
             message: `${next.length} titles from ${source.name} are ready to browse.`,
             href: "/app?core=libraries",
           });
@@ -447,8 +453,15 @@ export const useCinevo = create<CinevoState>()(
       },
       removeSource: (id) => {
         const src = get().sources.find((s) => s.id === id);
-        const localTitles = get().localTitles.filter((t) => t.sourceLabel !== src?.name);
-        const remoteTitles = get().remoteTitles.filter((t) => t.sourceLabel !== src?.name);
+        const matches = (label: string) => {
+          if (!src) return false;
+          if (label === src.name) return true;
+          const handle = src.name.replace(/^@/, "");
+          return label.startsWith(`${handle} ·`) || label.startsWith(`${src.name} ·`);
+        };
+        const droppedLocal = get().localTitles.filter((t) => src && t.source === src.kind && matches(t.sourceLabel));
+        const localTitles = get().localTitles.filter((t) => !(src && t.source === src.kind && matches(t.sourceLabel)));
+        const remoteTitles = get().remoteTitles.filter((t) => !(src && t.source === src.kind && matches(t.sourceLabel)));
         const keep = new Set([...localTitles, ...remoteTitles].map((t) => t.id));
         const sources = get().sources.filter((s) => s.id !== id);
         set({
@@ -458,6 +471,9 @@ export const useCinevo = create<CinevoState>()(
           sourceFilter: sources.length <= 1 ? "all" : get().sourceFilter,
           tonight: get().tonight.filter((tid) => keep.has(tid)),
           favorites: get().favorites.filter((tid) => keep.has(tid)),
+        });
+        void import("./library").then((m) => {
+          for (const t of droppedLocal) m.forgetBlob(t.id);
         });
         void import("./folder-handles").then((m) => m.deleteFolderHandle(id));
         get().flash("Source removed");
@@ -483,6 +499,8 @@ export const useCinevo = create<CinevoState>()(
         } catch {
           /* ignore quota / private mode */
         }
+        void import("./library").then((m) => m.forgetAllBlobs());
+        void import("./folder-handles").then((m) => m.clearFolderHandles());
         get().flash("Local data cleared");
       },
     }),
@@ -529,7 +547,7 @@ export const useCinevo = create<CinevoState>()(
             : [],
           sourceFilter:
             Array.isArray(p.sources) && p.sources.length > 1 &&
-            (p.sourceFilter === "folder" || p.sourceFilter === "plex" || p.sourceFilter === "jellyfin")
+            (p.sourceFilter === "folder" || p.sourceFilter === "plex" || p.sourceFilter === "jellyfin" || p.sourceFilter === "shared")
               ? p.sourceFilter
               : "all",
           prefs: {

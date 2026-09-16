@@ -11,15 +11,19 @@ export function Rehydrate() {
     } catch {
       /* ignore */
     }
-    void Promise.resolve(useCinevo.persist.rehydrate()).then(async () => {
-      const theme = useCinevo.getState().prefs.theme || "pulse";
-      document.documentElement.setAttribute("data-theme", theme);
-      const restored = await restoreFolderBlobs();
-      if (restored) {
-        const s = useCinevo.getState();
-        useCinevo.setState({ localTitles: [...s.localTitles] });
-      }
-    });
+    void Promise.resolve(useCinevo.persist.rehydrate())
+      .then(async () => {
+        const theme = useCinevo.getState().prefs.theme || "pulse";
+        document.documentElement.setAttribute("data-theme", theme);
+        const restored = await restoreFolderBlobs();
+        if (restored) {
+          const s = useCinevo.getState();
+          useCinevo.setState({ localTitles: [...s.localTitles] });
+        }
+      })
+      .finally(() => {
+        useCinevo.setState({ hydrated: true });
+      });
   }, []);
   return null;
 }

@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/app",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 838,
+      "bodyTextHash": "392c27133fa2100ca02a7e865fe84278095431485dbaad5e77b1b67905560118",
+      "bodyTextPrefix": "CINEVO Home Movies TV Library CORE PRIVATE BY DESIGN Your media.",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-app-auth.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 833,
+      "bodyTextHash": "d9b43a8a6a7f106bf3a7c69d7d770319568d629d1ec4691586f5862d1e9fc66c",
+      "bodyTextPrefix": "CINEVO Home Movies TV Library PRIVATE BY DESIGN Your media. Your",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-app-auth-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/cinevo-app-auth.json"
+}

@@ -7,6 +7,15 @@ import { Rail } from "./poster";
 import { InstallerCards } from "./installers";
 import { Link } from "@tanstack/react-router";
 import { THEMES } from "@/lib/library";
+import { SharePanel } from "./share-panel";
+import { getMyProfile } from "@/lib/sharing";
+
+const AI_PRESETS = [
+  { label: "Tonight", q: "What should I watch tonight from this library?" },
+  { label: "Short", q: "Pick a shorter title I can finish tonight." },
+  { label: "Comfort", q: "A comforting rewatch from titles I already have." },
+  { label: "Bold", q: "Something bold and cinematic I have not queued lately." },
+];
 
 export function Detail() {
   const id = useCinevo((s) => s.selectedId);
@@ -114,6 +123,9 @@ export function SearchOverlay() {
     () => filterCatalog({ query: q, pool: [...extra, ...remote] }).slice(0, 8),
     [q, extra, remote],
   );
+  useEffect(() => {
+    if (!open) setQ("");
+  }, [open]);
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-40 flex items-start justify-center bg-cine-bg/80 p-4 pt-20"
@@ -209,7 +221,7 @@ export function SettingsModal() {
           </button>
         </header>
         <div className="space-y-3">
-          <p className="font-ui text-xs tracking-[0.18em] text-cine-cyan">NEON THEME</p>
+          <p className="font-ui text-xs tracking-[0.18em] text-cine-cyan">THEME</p>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {THEMES.map((t) => (
               <button
@@ -245,7 +257,7 @@ export function SettingsModal() {
         <div className="mt-6 rounded-lg border border-cine-danger/40 bg-cine-surface px-3 py-3">
           <b className="block font-ui text-sm">Local data</b>
           <p className="mt-1 text-xs text-cine-faint">
-            This clears watch progress, My List, indexed titles, and Node pairing on this device.
+            This clears watch progress, My List, indexed titles, Plex sign-in, and Node pairing on this device.
           </p>
           <button
             type="button"
@@ -276,23 +288,26 @@ export function CoreModal() {
   const setCoreOpen = useCinevo((s) => s.setCoreOpen);
   const setCoreTab = useCinevo((s) => s.setCoreTab);
   const sources = useCinevo((s) => s.sources);
-  const invites = useCinevo((s) => s.invites);
-  const addInvite = useCinevo((s) => s.addInvite);
-  const setInviteStatus = useCinevo((s) => s.setInviteStatus);
   const aiConsent = useCinevo((s) => s.aiConsent);
   const setAiConsent = useCinevo((s) => s.setAiConsent);
   const flash = useCinevo((s) => s.flash);
-  const [name, setName] = useState("");
-  const [days, setDays] = useState(7);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [pending, setPending] = useState(false);
+  const [profile, setProfile] = useState<{ username: string; xp: number; streak: number } | null>(null);
+  useEffect(() => {
+    if (!open) return;
+    void getMyProfile()
+      .then((res) => {
+        if (res.ok && res.profile) setProfile(res.profile);
+      })
+      .catch(() => undefined);
+  }, [open]);
   if (!open) return null;
   const points =
     (sources.length ? 1 : 0) +
-    (invites.length ? 1 : 0) +
-    (aiConsent ? 1 : 0) +
-    1;
+    (profile ? 1 : 0) +
+    (aiConsent ? 1 : 0);
 
   const ask = async () => {
     if (!question.trim() || pending) return;
@@ -379,7 +394,7 @@ export function CoreModal() {
             <div>
               <p className="font-ui text-xs tracking-[0.18em] text-cine-cyan">NODE INSTALLERS</p>
               <p className="mt-1 mb-3 text-sm text-cine-muted">
-                Required for Plex, Jellyfin, and disk paths. Folder pick works without it.
+                Needed for Jellyfin and disk paths on the computer that holds the files. Plex signs in here. Folder pick works in this browser.
               </p>
               <InstallerCards />
               <Link
@@ -392,78 +407,28 @@ export function CoreModal() {
             </div>
           </div>
         )}
-        {tab === "sharing" && (
-          <div className="space-y-4">
-            <div className="grid gap-3 sm:grid-cols-3">
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="h-11 rounded-md border border-cine-border bg-cine-well px-3 font-ui"
-                placeholder="Friend name"
-              />
-              <select
-                value={days}
-                onChange={(e) => setDays(Number(e.target.value))}
-                className="h-11 rounded-md border border-cine-border bg-cine-well px-3 font-ui"
-              >
-                <option value={3}>3 days</option>
-                <option value={7}>7 days</option>
-                <option value={14}>14 days</option>
-              </select>
-              <button
-                type="button"
-                className="h-11 rounded-md bg-cine-magenta px-4 font-ui font-bold text-cine-bg"
-                onClick={() => {
-                  addInvite(name, days);
-                  flash("Invite created");
-                }}
-              >
-                Create invite
-              </button>
-            </div>
-            {invites.length ? (
-              invites.map((i) => (
-                <article key={i.id} className="flex items-center justify-between rounded-lg bg-cine-surface px-3 py-3">
-                  <span>
-                    <b className="font-ui">{i.name}</b>
-                    <small className="ml-2 text-cine-faint">
-                      {i.status} · {i.days}d
-                    </small>
-                  </span>
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      className="font-ui text-sm text-cine-cyan"
-                      onClick={() => setInviteStatus(i.id, i.status === "paused" ? "active" : "paused")}
-                    >
-                      {i.status === "paused" ? "Restore" : "Pause"}
-                    </button>
-                    <button
-                      type="button"
-                      className="font-ui text-sm text-cine-danger"
-                      onClick={() => setInviteStatus(i.id, "revoked")}
-                    >
-                      Revoke
-                    </button>
-                  </div>
-                </article>
-              ))
-            ) : (
-              <p className="rounded-lg border border-dashed border-cine-border px-3 py-4 text-sm text-cine-faint">
-                No invites yet. Name a friend and create one — nothing is pre-seeded.
-              </p>
-            )}
-          </div>
-        )}
+        {tab === "sharing" && <SharePanel />}
         {tab === "stewardship" && (
           <div>
             <p className="font-mono text-4xl text-cine-cyan">{points}</p>
             <p className="font-ui text-sm text-cine-muted">stewardship points — for care, not watch-time.</p>
+            {profile ? (
+              <p className="mt-3 font-ui text-sm text-cine-text">
+                @{profile.username} · {profile.xp} XP · {profile.streak} night streak
+              </p>
+            ) : (
+              <p className="mt-3 text-sm text-cine-faint">Claim a username to start a streak and share libraries.</p>
+            )}
             <div className="mt-4 grid grid-cols-2 gap-3">
-              {["Private index", "Library care", "Invite boundary", "AI consent"].map((label, i) => (
-                <article key={label} className="rounded-lg border border-cine-border bg-cine-surface p-3">
-                  <b className="font-ui text-sm">{label}</b>
-                  <p className="text-xs text-cine-faint">{i < points ? "Complete" : "Open"}</p>
+              {[
+                { label: "Private index", done: sources.length > 0 },
+                { label: "Username ready", done: Boolean(profile) },
+                { label: "AI consent", done: aiConsent },
+                { label: "Library care", done: sources.length > 0 },
+              ].map((item) => (
+                <article key={item.label} className="rounded-lg border border-cine-border bg-cine-surface p-3">
+                  <b className="font-ui text-sm">{item.label}</b>
+                  <p className="text-xs text-cine-faint">{item.done ? "Complete" : "Open"}</p>
                 </article>
               ))}
             </div>
@@ -485,6 +450,18 @@ export function CoreModal() {
             </label>
             {aiConsent ? (
               <>
+                <div className="flex flex-wrap gap-2">
+                  {AI_PRESETS.map((p) => (
+                    <button
+                      key={p.label}
+                      type="button"
+                      className="h-11 rounded-full bg-cine-well px-4 font-ui text-sm"
+                      onClick={() => setQuestion(p.q)}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
                 <textarea
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
@@ -507,6 +484,77 @@ export function CoreModal() {
             )}
           </div>
         )}
+      </section>
+    </div>
+  );
+}
+
+export function NoticesOverlay() {
+  const open = useCinevo((s) => s.noticesOpen);
+  const setNoticesOpen = useCinevo((s) => s.setNoticesOpen);
+  const notices = useCinevo((s) => s.notices);
+  const markNoticeRead = useCinevo((s) => s.markNoticeRead);
+  const markAllNoticesRead = useCinevo((s) => s.markAllNoticesRead);
+  const dismissNotice = useCinevo((s) => s.dismissNotice);
+  const setCoreOpen = useCinevo((s) => s.setCoreOpen);
+  const setRoom = useCinevo((s) => s.setRoom);
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-40 bg-cine-bg/80 p-4" onMouseDown={() => setNoticesOpen(false)}>
+      <section
+        className="glass-strong mx-auto mt-16 max-w-lg rounded-xl p-5"
+        onMouseDown={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Notices"
+      >
+        <header className="mb-4 flex items-start justify-between">
+          <div>
+            <p className="font-ui text-xs tracking-[0.22em] text-cine-cyan">HOUSE NOTES</p>
+            <h2 className="font-display text-lg tracking-widest">Notices</h2>
+          </div>
+          <button type="button" aria-label="Close notices" onClick={() => setNoticesOpen(false)}>
+            <X size={18} />
+          </button>
+        </header>
+        {notices.length ? (
+          <div className="mb-3 flex justify-end">
+            <button type="button" className="font-ui text-xs text-cine-cyan" onClick={markAllNoticesRead}>
+              Mark all read
+            </button>
+          </div>
+        ) : (
+          <p className="text-sm text-cine-faint">Nothing waiting. Library changes and sharing land here.</p>
+        )}
+        <ul className="space-y-2">
+          {notices.map((n) => (
+            <li key={n.id} className={`rounded-lg px-3 py-3 ${n.readAt ? "bg-cine-well" : "bg-cine-surface"}`}>
+              <button
+                type="button"
+                className="w-full text-left"
+                onClick={() => {
+                  markNoticeRead(n.id);
+                  if (n.href?.includes("core=sharing")) setCoreOpen(true, "sharing");
+                  else if (n.href?.includes("core=libraries")) {
+                    setCoreOpen(false);
+                    setRoom("sidebar");
+                  } else if (n.href?.includes("core=ai")) setCoreOpen(true, "ai");
+                  setNoticesOpen(false);
+                }}
+              >
+                <b className="block font-ui text-sm">{n.title}</b>
+                <p className="mt-1 text-xs text-cine-muted">{n.message}</p>
+              </button>
+              <button
+                type="button"
+                className="mt-2 font-ui text-xs text-cine-faint hover:text-cine-danger"
+                onClick={() => dismissNotice(n.id)}
+              >
+                Dismiss
+              </button>
+            </li>
+          ))}
+        </ul>
       </section>
     </div>
   );

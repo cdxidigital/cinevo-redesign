@@ -20,6 +20,7 @@ export function Keys() {
         if (s.searchOpen) s.setSearchOpen(false);
         else if (s.settingsOpen) s.setSettingsOpen(false);
         else if (s.coreOpen) s.setCoreOpen(false);
+        else if (s.noticesOpen) s.setNoticesOpen(false);
         else if (s.selectedId) s.closeTitle();
         return;
       }

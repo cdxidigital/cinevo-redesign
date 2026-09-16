@@ -57,6 +57,20 @@ export async function deleteFolderHandle(id: string) {
   }
 }
 
+export async function clearFolderHandles() {
+  try {
+    const db = await openDb();
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(STORE, "readwrite");
+      tx.objectStore(STORE).clear();
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  } catch {
+    /* ignore */
+  }
+}
+
 async function walk(dir: FileSystemDirectoryHandle, out: File[], depth = 0) {
   if (depth > 6 || out.length > 80) return;
   // @ts-expect-error async iterator on directory handles
