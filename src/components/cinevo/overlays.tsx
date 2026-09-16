@@ -221,21 +221,24 @@ export function SettingsModal() {
           </button>
         </header>
         <div className="space-y-3">
-          <p className="font-ui text-xs tracking-[0.18em] text-cine-cyan">THEME</p>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <p className="font-ui text-xs tracking-[0.18em] text-cine-cyan">APPEARANCE</p>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {THEMES.map((t) => (
               <button
                 key={t.id}
                 type="button"
-                aria-label={`${t.label} theme`}
+                aria-label={`${t.label} theme — ${t.feel}`}
                 aria-pressed={prefs.theme === t.id}
                 onClick={() => setTheme(t.id)}
-                className={`flex h-11 flex-col items-center justify-center rounded-md border ${
+                className={`flex flex-col items-start gap-1 rounded-lg border p-3 text-left ${
                   prefs.theme === t.id ? "border-cine-cyan glow-cyan" : "border-cine-border"
                 }`}
               >
-                <i className="swatch size-4 rounded-full" data-swatch={t.id} />
-                <span className="font-ui text-xs">{t.label}</span>
+                <span className="flex w-full items-center gap-2">
+                  <i className="swatch size-3.5 shrink-0 rounded-full" data-swatch={t.id} />
+                  <span className="font-ui text-sm font-medium">{t.label}</span>
+                </span>
+                <small className="text-cine-faint leading-snug">{t.feel}</small>
               </button>
             ))}
           </div>

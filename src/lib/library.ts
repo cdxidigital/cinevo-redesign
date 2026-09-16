@@ -191,10 +191,18 @@ export function remoteTitle(input: {
 }
 
 export const THEMES = [
-  { id: "pulse", label: "Night", accent: "#8B2FFF" },
-  { id: "nova", label: "Cyan", accent: "#55CFFF" },
-  { id: "iris", label: "Paper", accent: "#f7f5fa" },
-  { id: "ember", label: "Pink", accent: "#FF4DA5" },
+  { id: "pulse", label: "Pulse", feel: "Electric cyan on black — default", accent: "#0ccdf6" },
+  { id: "noir", label: "Noir", feel: "Stark B&W challenger", accent: "#ffffff" },
+  { id: "violet", label: "Violet", feel: "Cinematic violet — reference glass", accent: "#9b4dff" },
+  { id: "ember", label: "Ember", feel: "Warm late-night watch", accent: "#ff6b35" },
+  { id: "sage", label: "Sage", feel: "Calm library care", accent: "#5ddea6" },
+  { id: "day", label: "Day", feel: "Light canvas, same cyan accent", accent: "#0ccdf6" },
 ] as const;
 
 export type ThemeId = (typeof THEMES)[number]["id"];
+
+/** Legacy theme ids from earlier builds, mapped to the current lock. */
+export const THEME_ALIASES: Record<string, ThemeId> = {
+  nova: "pulse",
+  iris: "day",
+};
