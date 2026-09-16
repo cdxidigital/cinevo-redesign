@@ -13,9 +13,11 @@ var install_page_default = "<!DOCTYPE html>\n<html lang=\"en\" class=\"device-de
 //#region \0virtual:grok-og-identity
 var grokOgIdentity = { "site": {
 	"title": "CINEVO",
-	"description": "A private cinematic home for the libraries you already own.",
+	"description": "Cinema, reinvented. Your library. No ads. No subscriptions.",
 	"card": "custom",
-	"image": "/og.jpg"
+	"color": "0B0B0B",
+	"image": "/og.jpg",
+	"banner": "/x-banner.jpg"
 } };
 //#endregion
 //#region scripts/grok-pwa-shared.mjs

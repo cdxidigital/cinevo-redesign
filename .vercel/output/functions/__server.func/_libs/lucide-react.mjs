@@ -148,30 +148,6 @@ var CircleCheck = createLucideIcon("circle-check", [["circle", {
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
-var Clapperboard = createLucideIcon("clapperboard", [
-	["path", {
-		d: "M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z",
-		key: "1tn4o7"
-	}],
-	["path", {
-		d: "m6.2 5.3 3.1 3.9",
-		key: "iuk76l"
-	}],
-	["path", {
-		d: "m12.4 3.4 3.1 4",
-		key: "6hsd6n"
-	}],
-	["path", {
-		d: "M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z",
-		key: "ltgou9"
-	}]
-]);
-/**
-* @license lucide-react v0.510.0 - ISC
-*
-* This source code is licensed under the ISC license.
-* See the LICENSE file in the root directory of this source tree.
-*/
 var Download = createLucideIcon("download", [
 	["path", {
 		d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4",
@@ -235,16 +211,6 @@ var Expand = createLucideIcon("expand", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
-var FolderOpen = createLucideIcon("folder-open", [["path", {
-	d: "m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2",
-	key: "usdka0"
-}]]);
-/**
-* @license lucide-react v0.510.0 - ISC
-*
-* This source code is licensed under the ISC license.
-* See the LICENSE file in the root directory of this source tree.
-*/
 var FolderPlus = createLucideIcon("folder-plus", [
 	["path", {
 		d: "M12 10v6",
@@ -292,19 +258,6 @@ var HardDrive = createLucideIcon("hard-drive", [
 		key: "1l4acy"
 	}]
 ]);
-/**
-* @license lucide-react v0.510.0 - ISC
-*
-* This source code is licensed under the ISC license.
-* See the LICENSE file in the root directory of this source tree.
-*/
-var House = createLucideIcon("house", [["path", {
-	d: "M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8",
-	key: "5wwlr5"
-}], ["path", {
-	d: "M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
-	key: "1d0kgt"
-}]]);
 /**
 * @license lucide-react v0.510.0 - ISC
 *
@@ -651,24 +604,6 @@ var TriangleAlert = createLucideIcon("triangle-alert", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
-var Tv = createLucideIcon("tv", [["rect", {
-	width: "20",
-	height: "15",
-	x: "2",
-	y: "7",
-	rx: "2",
-	ry: "2",
-	key: "10ag99"
-}], ["polyline", {
-	points: "17 2 12 7 7 2",
-	key: "11pgbg"
-}]]);
-/**
-* @license lucide-react v0.510.0 - ISC
-*
-* This source code is licensed under the ISC license.
-* See the LICENSE file in the root directory of this source tree.
-*/
 var Unplug = createLucideIcon("unplug", [
 	["path", {
 		d: "m19 5 3-3",
@@ -755,4 +690,4 @@ var X = createLucideIcon("x", [["path", {
 	key: "d8bk6v"
 }]]);
 //#endregion
-export { ChevronLeft as A, HardDrive as C, Download as D, Expand as E, Captions as M, ArrowLeft as N, Clapperboard as O, House as S, FolderOpen as T, Menu as _, Tv as a, Link2 as b, Star as c, Settings2 as d, Server as f, Pause as g, Play as h, Unplug as i, Check as j, CircleCheck as k, Shuffle as l, RefreshCw as m, VolumeX as n, TriangleAlert as o, Search as p, Volume2 as r, Trash2 as s, X as t, ShieldCheck as u, LoaderCircle as v, FolderPlus as w, KeyRound as x, ListPlus as y };
+export { Expand as C, Check as D, ChevronLeft as E, Captions as O, FolderPlus as S, CircleCheck as T, LoaderCircle as _, TriangleAlert as a, KeyRound as b, Shuffle as c, Server as d, Search as f, Menu as g, Pause as h, Unplug as i, ArrowLeft as k, ShieldCheck as l, Play as m, VolumeX as n, Trash2 as o, RefreshCw as p, Volume2 as r, Star as s, X as t, Settings2 as u, ListPlus as v, Download as w, HardDrive as x, Link2 as y };

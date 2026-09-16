@@ -1,0 +1,38 @@
+{
+  "url": "http://127.0.0.1:8080/node",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 987,
+      "bodyTextHash": "e57f454503946bc02b6f025c21a1cb24008c48095c256ce32d83108d7c634780",
+      "bodyTextPrefix": "CINEVO PRIVATE COMPANION CINEVO NODE Your library, close to home",
+      "horizontalOverflow": false,
+      "consoleErrors": [
+        "A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:\n\n- A server/client branch `if (typeof window !== 'undefined')`.\n- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.\n- Date formatting in a user's locale which doesn't match the server.\n- External changing data without sending a snapshot of it along with the HTML.\n- Invalid HTML tag nesting.\n\nIt can also happen if the client has a browser extension installed which messes with the HTML before React loaded.\n\n%s%s https://react.dev/link/hydration-mismatch \n\n  ...\n    <MatchImpl routeId=\"/node\">\n      <MatchView router={{...}} match={{id:\"/node/...\", ...}}>\n        <SafeFragment>\n          <SafeFragment fallback={null}>\n            <CatchBoundary getResetKey={function getResetKey} errorComponent={function AppErrorComponent} ...>\n              <SafeFragment fallback={function fallback}>\n                <MatchInnerImpl match={{id:\"/node/...\", ...}}>\n                  <Lazy>\n                    <NodePairing>\n                      <div className=\"min-h-scre...\">\n                        <nav>\n                        <main className=\"relative z...\">\n                          <section className=\"grid items...\">\n                            <div>\n                            <aside className=\"glass roun...\">\n                              <header>\n                              <label>\n                              <input\n                                value=\"http://127.0.0.1:48184\"\n                                onChange={function onChange}\n                                className=\"mt-2 h-11 w-full rounded-md border border-cine-border bg-cine-well px-3 fon...\"\n                                autoCapitalize=\"none\"\n                                autoCorrect=\"off\"\n                                aria-label=\"Local Node address\"\n-                               style={{caret-color:\"transparent\"}}\n                              >\n                              <label>\n                              <input\n                                value=\"\"\n                                onChange={function onChange}\n                                placeholder=\"ABC-123\"\n                                aria-label=\"Pairing code\"\n                                className=\"mt-2 h-11 w-full rounded-md border border-cine-border bg-cine-well px-3 fon...\"\n                                autoCapitalize=\"characters\"\n                                autoCorrect=\"off\"\n-                               style={{caret-color:\"transparent\"}}\n                              >\n                              ...\n                          ...\n"
+      ],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-node-signed.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 987,
+      "bodyTextHash": "e57f454503946bc02b6f025c21a1cb24008c48095c256ce32d83108d7c634780",
+      "bodyTextPrefix": "CINEVO PRIVATE COMPANION CINEVO NODE Your library, close to home",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-node-signed-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/cinevo-node-signed.json"
+}

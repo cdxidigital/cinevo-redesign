@@ -88,7 +88,10 @@ function NodePairing() {
       <main className="relative z-10 mx-auto max-w-6xl px-5 py-12">
         <section className="grid items-center gap-10 lg:grid-cols-[1.15fr_0.85fr]">
           <div>
-            <p className="font-ui text-xs font-semibold uppercase tracking-[0.28em] text-cine-muted">CINEVO Node</p>
+            <p className="flex items-center gap-3 font-ui text-xs font-semibold uppercase tracking-[0.28em] text-cine-muted">
+              <img src="/node-icon.png" alt="" className="size-8 rounded-md" />
+              CINEVO Node
+            </p>
             <h1 className="mt-3 font-display text-4xl font-extrabold leading-none tracking-tight md:text-6xl">
               Your library,
               <br />

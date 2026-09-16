@@ -1,28 +1,24 @@
 import { cn } from "@/lib/utils";
 
-const sizes = {
-  sm: "text-2xl",
-  md: "text-3xl md:text-4xl",
-  lg: "text-5xl md:text-6xl",
-  xl: "text-6xl md:text-8xl",
-} as const;
-
 export function Logo({
   size = "md",
   className,
+  tagline = true,
 }: {
-  size?: keyof typeof sizes;
+  size?: "sm" | "md" | "lg" | "xl";
   className?: string;
+  tagline?: boolean;
 }) {
+  const showTag = tagline && size !== "sm";
   return (
-    <span
-      className={cn(
-        "inline-block font-display font-extrabold tracking-tight leading-none text-cine-text",
-        sizes[size],
-        className,
-      )}
-    >
-      CINEVO
+    <span className={cn("brand", className)}>
+      <span className="brand__mark" aria-hidden="true">
+        <i />
+      </span>
+      <span>
+        <b>CINEVO</b>
+        {showTag ? <small>Private cinema, reinvented</small> : null}
+      </span>
     </span>
   );
 }

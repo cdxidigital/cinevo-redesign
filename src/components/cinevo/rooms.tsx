@@ -15,6 +15,94 @@ import { useLibrary } from "@/lib/use-library";
 import { PosterCard, Rail } from "./poster";
 import { AddLibrary } from "./add-library";
 
+const SOURCES: [SourceFilter, string][] = [
+  ["all", "All"],
+  ["folder", "Folders"],
+  ["plex", "Plex"],
+  ["jellyfin", "Jellyfin"],
+];
+
+function HeroActions({
+  onPlay,
+  playLabel,
+  onMore,
+  moreLabel = "More info",
+  extra,
+  playIcon = true,
+}: {
+  onPlay: () => void;
+  playLabel: string;
+  onMore: () => void;
+  moreLabel?: string;
+  extra?: React.ReactNode;
+  playIcon?: boolean;
+}) {
+  return (
+    <div className="house-actions">
+      <button type="button" onClick={onPlay} className="house-btn house-btn--play">
+        {playIcon ? <Play size={16} fill="currentColor" /> : null} {playLabel}
+      </button>
+      <button type="button" onClick={onMore} className="house-btn house-btn--ghost">
+        {moreLabel}
+      </button>
+      {extra}
+    </div>
+  );
+}
+
+function PlatformArc() {
+  const setRoom = useCinevo((s) => s.setRoom);
+  const setCoreOpen = useCinevo((s) => s.setCoreOpen);
+  const cards = [
+    {
+      title: "Private libraries",
+      copy: "Folders on this computer, Plex on any server you own or share, Jellyfin through Node.",
+      action: "Open",
+      onClick: () => setRoom("sidebar"),
+    },
+    {
+      title: "Friend sharing",
+      copy: "Invite-only access with a name, a window, and a revoke button.",
+      action: "Share",
+      onClick: () => setCoreOpen(true, "sharing"),
+    },
+    {
+      title: "Library care",
+      copy: "Stewardship for the collection. No watch-time scores. No social pressure.",
+      action: "Review",
+      onClick: () => setCoreOpen(true, "stewardship"),
+    },
+    {
+      title: "Consent-led AI",
+      copy: "Ask the titles already in this house. Nothing leaves until you opt in.",
+      action: "Ask",
+      onClick: () => setCoreOpen(true, "ai"),
+    },
+  ];
+  return (
+    <section className="platform-arc">
+      <header>
+        <p className="house-kicker">Your private media OS</p>
+        <h2>
+          Thoughtfully organised.
+          <br />
+          Entirely yours.
+        </h2>
+        <p>CINEVO keeps the libraries you control in one house — folders, Plex, Node — without ads or a public feed.</p>
+      </header>
+      <div className="platform-arc__grid">
+        {cards.map((card) => (
+          <button key={card.title} type="button" className="arc-card" onClick={card.onClick}>
+            <b>{card.title}</b>
+            <span>{card.copy}</span>
+            <i>{card.action}</i>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export function StageRoom() {
   const play = useCinevo((s) => s.play);
   const openTitle = useCinevo((s) => s.openTitle);
@@ -22,8 +110,6 @@ export function StageRoom() {
   const favorites = useCinevo((s) => s.favorites);
   const tonight = useCinevo((s) => s.tonight);
   const mood = useCinevo((s) => s.mood);
-  const setMood = useCinevo((s) => s.setMood);
-  const addTonight = useCinevo((s) => s.addTonight);
   const shufflePlay = useCinevo((s) => s.shufflePlay);
   const setCoreOpen = useCinevo((s) => s.setCoreOpen);
   const setRoom = useCinevo((s) => s.setRoom);
@@ -53,7 +139,9 @@ export function StageRoom() {
   const myList = filtered.filter((t) => favorites.includes(t.id));
   const suggestions = pool.filter((t) => !favorites.includes(t.id) && !addedIds.has(t.id)).slice(0, 8);
   const moodMeta = MOODS.find((m) => m.id === mood) ?? MOODS[0];
-  const queueable = pool.filter((t) => !tonight.includes(t.id)).slice(0, 8);
+  const queued = tonight
+    .map((id) => titleById(id))
+    .filter((t): t is Title => Boolean(t));
 
   const ask = async () => {
     if (!question.trim() || pending) return;
@@ -83,202 +171,145 @@ export function StageRoom() {
     }
   };
 
+  const still = hero?.still || "/stills/hero-theater.jpg";
+
   return (
     <div>
-      {hero ? (
-        <section className="relative min-h-[58vh] overflow-hidden rounded-xl border border-cine-border">
-          <img src={hero.still || "/stills/theater.jpg"} alt="" className="absolute inset-0 h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-linear-to-r from-cine-bg/95 via-cine-bg/55 to-transparent" />
-          <div className="relative flex min-h-[58vh] max-w-xl flex-col justify-end p-6 md:p-10">
-            <p className="font-ui text-xs tracking-[0.28em] text-cine-muted">FEATURED</p>
-            <h1 className="mt-2 font-display text-4xl font-extrabold tracking-tight md:text-6xl">{hero.title}</h1>
-            <p className="mt-3 font-mono text-sm text-cine-muted">
-              {hero.year} · {hero.runtime} · {hero.genre}
-              {hero.rating > 0 ? (
-                <>
-                  {" "}
-                  · <Star size={12} className="inline text-cine-amber" fill="currentColor" /> {hero.rating.toFixed(1)}
-                </>
-              ) : null}
-            </p>
-            <p className="mt-3 text-sm text-cine-muted">{hero.synopsis}</p>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={() => play(hero.id)}
-                className="inline-flex h-11 items-center gap-2 rounded-md bg-cine-text px-5 font-ui font-semibold tracking-wide text-cine-bg"
-              >
-                <Play size={16} fill="currentColor" /> {heroProgress > 0 && heroProgress < 100 ? "Resume" : "Play"}
-              </button>
-              <button
-                type="button"
-                onClick={() => openTitle(hero.id)}
-                className="inline-flex h-11 items-center rounded-md border border-cine-cyan px-5 font-ui font-bold tracking-wider text-cine-cyan"
-              >
-                More info
-              </button>
-              <button
-                type="button"
-                onClick={shufflePlay}
-                className="inline-flex h-11 items-center gap-2 rounded-md border border-cine-border px-4 font-ui font-bold tracking-wider text-cine-muted"
-              >
-                <Shuffle size={16} /> Surprise me
-              </button>
-            </div>
-          </div>
-        </section>
-      ) : (
-        <section className="relative min-h-[58vh] overflow-hidden rounded-xl border border-cine-border">
-          <img src="/stills/theater.jpg" alt="" className="absolute inset-0 h-full w-full object-cover opacity-50" />
-          <div className="absolute inset-0 bg-linear-to-r from-cine-bg/95 via-cine-bg/70 to-transparent" />
-          <div className="relative flex min-h-[58vh] max-w-xl flex-col justify-end p-6 md:p-10">
-            <p className="font-ui text-xs tracking-[0.28em] text-cine-muted">CINEVO</p>
-            <h1 className="mt-2 font-display text-4xl font-extrabold tracking-tight md:text-6xl">Cinema, reinvented.</h1>
-            <p className="mt-3 text-sm text-cine-muted">
-              Start with a folder on this computer, or pair CINEVO Node for Plex and Jellyfin.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={() => setRoom("sidebar")}
-                className="inline-flex h-11 items-center rounded-md bg-cine-text px-5 font-ui font-semibold tracking-wide text-cine-bg"
-              >
-                Add library
-              </button>
-            </div>
-          </div>
-        </section>
-      )}
+      <section className="house-hero" aria-labelledby="featured-title">
+        <img src={still} alt="" className="house-hero__art" />
+        <div className="house-hero__shade" />
+        <div className="house-hero__copy">
+          <p className="house-kicker">{hero ? "Featured for your night" : "Private by design"}</p>
+          <h1 id="featured-title">{hero ? hero.title : "Your media. Your moment."}</h1>
+          {hero ? (
+            <>
+              <p className="house-meta">
+                <span>{hero.year}</span>
+                <i />
+                <span>{hero.runtime}</span>
+                <i />
+                <span>{hero.genre}</span>
+                {hero.rating > 0 ? (
+                  <>
+                    <i />
+                    <span>
+                      <Star size={12} className="inline text-cine-amber" fill="currentColor" /> {hero.rating.toFixed(1)}
+                    </span>
+                  </>
+                ) : null}
+              </p>
+              <p className="lede">{hero.synopsis}</p>
+              <HeroActions
+                onPlay={() => play(hero.id)}
+                playLabel={heroProgress > 0 && heroProgress < 100 ? "Resume" : "Play now"}
+                onMore={() => openTitle(hero.id)}
+                extra={
+                  <button type="button" onClick={shufflePlay} className="house-btn house-btn--ghost">
+                    <Shuffle size={16} /> Surprise me
+                  </button>
+                }
+              />
+            </>
+          ) : (
+            <>
+              <p className="lede">
+                Start with a folder on this computer, or sign in with Plex to see every server on your account — home,
+                shared, remote.
+              </p>
+              <HeroActions
+                onPlay={() => setRoom("sidebar")}
+                playLabel="Add library"
+                playIcon={false}
+                onMore={() => setCoreOpen(true, "libraries")}
+                moreLabel="Open Core"
+              />
+            </>
+          )}
+        </div>
+      </section>
 
-      {library.length ? (
-        <>
-          <div className="mt-5 flex flex-wrap gap-2">
-            {MOODS.map((m) => (
-              <button
-                key={m.id}
-                type="button"
-                onClick={() => setMood(m.id)}
-                className={`h-11 rounded-full px-4 font-ui text-sm font-semibold ${
-                  mood === m.id ? "bg-cine-cyan text-cine-bg" : "text-cine-muted"
-                }`}
-                aria-pressed={mood === m.id}
-              >
-                {m.label}
-              </button>
-            ))}
-          </div>
-          {sources.length > 1 ? (
-            <div className="mt-2 flex flex-wrap gap-2">
-              {(
-                [
-                  ["all", "All"],
-                  ["folder", "Folders"],
-                  ["plex", "Plex"],
-                  ["jellyfin", "Jellyfin"],
-                ] as [SourceFilter, string][]
-              ).map(([id, label]) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => setSourceFilter(id)}
-                  className={`h-11 rounded-full px-4 font-ui text-sm ${
-                    sourceFilter === id ? "text-cine-cyan" : "text-cine-faint"
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          ) : null}
+      <div className="house-stage">
+        {library.length ? (
+          <>
+            {sources.length > 1 ? (
+              <div className="house-sources" role="tablist" aria-label="Sources">
+                {SOURCES.map(([id, label]) => (
+                  <button
+                    key={id}
+                    type="button"
+                    role="tab"
+                    aria-selected={sourceFilter === id}
+                    onClick={() => setSourceFilter(id)}
+                    className={sourceFilter === id ? "house-chip is-on" : "house-chip"}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            ) : null}
 
-          <div className="mt-6 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-            <aside className="glass rounded-xl p-4">
-              <header className="mb-3 flex items-center justify-between">
-                <div>
-                  <p className="font-ui text-xs tracking-[0.22em] text-cine-cyan">QUEUE</p>
-                  <h2 className="font-display text-xl tracking-widest">Tonight</h2>
-                </div>
-                <span className="font-mono text-xs text-cine-faint">{tonight.length}/8</span>
-              </header>
-              {tonight.length ? (
-                <div className="mb-4 grid grid-cols-4 gap-2">
-                  {tonight
-                    .map((id) => titleById(id))
-                    .filter((t): t is Title => Boolean(t))
-                    .map((t) => (
-                      <button
-                        key={t.id}
-                        type="button"
-                        onClick={() => openTitle(t.id)}
-                        className="overflow-hidden rounded-md border border-cine-border"
-                        aria-label={`Open ${t.title}`}
-                      >
-                        <img src={t.poster} alt="" className="aspect-2/3 w-full object-cover" />
-                      </button>
+            <div className="house-board">
+              <aside className="house-panel">
+                <header>
+                  <span>Tonight</span>
+                  <small className="font-mono text-xs text-cine-faint">{tonight.length}/8</small>
+                </header>
+                {queued.length ? (
+                  <ol className="house-queue">
+                    {queued.map((t, i) => (
+                      <li key={t.id}>
+                        <button type="button" onClick={() => play(t.id)} aria-label={`Play ${t.title}`}>
+                          <span className="house-queue__n">{String(i + 1).padStart(2, "0")}</span>
+                          <img src={t.poster} alt="" />
+                          <span>
+                            <b>{t.title}</b>
+                            <small>
+                              {t.runtime} · {progress[t.id] ?? 0}% watched
+                            </small>
+                          </span>
+                        </button>
+                      </li>
                     ))}
-                </div>
-              ) : (
-                <p className="mb-4 text-sm text-cine-faint">Tap a poster to queue it.</p>
-              )}
-              {queueable.length ? (
-                <div>
-                  <p className="mb-2 font-ui text-xs tracking-[0.18em] text-cine-muted">ADD</p>
-                  <div className="grid grid-cols-4 gap-2">
-                    {queueable.map((t) => (
-                      <button
-                        key={t.id}
-                        type="button"
-                        onClick={() => addTonight(t.id)}
-                        className="overflow-hidden rounded-md border border-cine-border"
-                        aria-label={`Queue ${t.title}`}
-                      >
-                        <img src={t.poster} alt="" className="aspect-2/3 w-full object-cover" />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ) : null}
-            </aside>
-
-            <section className="rounded-xl border border-cine-border bg-cine-surface p-4">
-              <p className="font-ui text-xs tracking-[0.22em] text-cine-cyan">NOW BROWSING</p>
-              <h2 className="font-display mt-1 text-2xl tracking-widest">{moodMeta.hint}</h2>
-              <p className="mt-2 text-sm text-cine-muted">Curated from titles already in this library. Mood only reshuffles the frame.</p>
-              <form
-                className="mt-4 flex flex-col gap-2 sm:flex-row"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  void ask();
-                }}
-              >
-                <input
-                  value={question}
-                  onChange={(e) => setQuestion(e.target.value)}
-                  maxLength={400}
-                  placeholder="What should I watch tonight?"
-                  aria-label="Ask CINEVO"
-                  className="h-11 flex-1 rounded-md border border-cine-border bg-cine-well px-3 font-ui"
-                />
-                <button
-                  type="submit"
-                  disabled={pending}
-                  className="h-11 rounded-md bg-cine-cyan px-4 font-ui font-bold text-cine-bg"
+                  </ol>
+                ) : (
+                  <p className="mt-4 px-1 text-sm text-cine-faint">Queue a title from any poster. It stays on this device.</p>
+                )}
+              </aside>
+              <section className="house-spot">
+                <p className="house-kicker">Now browsing</p>
+                <h2>{moodMeta.hint}</h2>
+                <p>Curated from titles already in this library. Nothing is uploaded.</p>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    void ask();
+                  }}
                 >
-                  {pending ? "Thinking…" : "Ask"}
-                </button>
-              </form>
-              {answer ? <p className="mt-3 text-sm text-cine-muted">{answer}</p> : null}
-            </section>
-          </div>
+                  <input
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                    maxLength={400}
+                    placeholder="What should I watch tonight?"
+                    aria-label="Ask CINEVO"
+                  />
+                  <button type="submit" disabled={pending} className="house-btn house-btn--play">
+                    {pending ? "Thinking…" : "Ask"}
+                  </button>
+                </form>
+                {answer ? <p className="relative z-10 mt-3 text-sm text-cine-muted">{answer}</p> : null}
+              </section>
+            </div>
 
-          <div className="mt-8 space-y-8">
-            {continueWatching.length ? <Rail heading="Up Next" titles={continueWatching} /> : null}
-            {added.length ? <Rail heading="Recently added" titles={added} /> : null}
-            {suggestions.length ? <Rail heading="Recommended" titles={suggestions} /> : null}
-            {myList.length ? <Rail heading="My List" titles={myList} /> : null}
-          </div>
-        </>
-      ) : null}
+            <div className="house-rails">
+              {continueWatching.length ? <Rail heading="Continue watching" titles={continueWatching} /> : null}
+              {added.length ? <Rail heading="Recently added" titles={added} /> : null}
+              {suggestions.length ? <Rail heading="You might like" titles={suggestions} /> : null}
+              {myList.length ? <Rail heading="My List" titles={myList} /> : null}
+            </div>
+          </>
+        ) : null}
+        <PlatformArc />
+      </div>
     </div>
   );
 }
@@ -293,39 +324,33 @@ export function BrowseRoom({ kind: initialKind = "all" }: { kind?: "all" | "movi
   const library = useLibrary();
   const titles = useMemo(() => filterCatalog({ kind, genre, pool: library }), [kind, genre, library]);
   const genres = genresIn(library);
+  const heading = initialKind === "movie" ? "Movies" : initialKind === "series" ? "TV Shows" : "Browse";
   return (
-    <div>
-      <header className="mb-6">
-        <p className="font-ui text-xs tracking-[0.28em] text-cine-muted">
-          {initialKind === "movie" ? "MOVIES" : initialKind === "series" ? "TV SHOWS" : "CATALOG"}
-        </p>
-        <h1 className="font-display text-3xl font-extrabold tracking-tight">
-          {initialKind === "movie" ? "Movies" : initialKind === "series" ? "TV Shows" : "Browse"}
-        </h1>
+    <div className="house-page">
+      <header>
+        <p className="house-kicker">Your library</p>
+        <h1>{heading}</h1>
+        <p className="lede">Find something worth disappearing into.</p>
       </header>
-      <div className="mb-5 flex flex-wrap gap-2">
+      <div className="house-sources mb-4">
         {(["all", "movie", "series"] as const).map((k) => (
           <button
             key={k}
             type="button"
             onClick={() => setKind(k)}
-            className={`h-11 rounded-full px-4 font-ui text-sm font-semibold capitalize ${
-              kind === k ? "bg-cine-cyan text-cine-bg" : "bg-cine-surface text-cine-muted"
-            }`}
+            className={kind === k ? "house-chip is-on" : "house-chip"}
           >
             {k === "all" ? "All" : k === "movie" ? "Movies" : "Series"}
           </button>
         ))}
       </div>
-      <div className="mb-6 flex flex-wrap gap-2">
+      <div className="house-sources mb-8">
         {genres.map((g) => (
           <button
             key={g}
             type="button"
             onClick={() => setGenre(g)}
-            className={`h-11 rounded-full px-4 font-ui text-sm font-semibold ${
-              genre === g ? "glow-cyan text-cine-cyan" : "border border-cine-border text-cine-muted"
-            }`}
+            className={genre === g ? "house-chip is-on" : "house-chip"}
           >
             {g}
           </button>
@@ -337,7 +362,7 @@ export function BrowseRoom({ kind: initialKind = "all" }: { kind?: "all" | "movi
         ))}
       </div>
       {!titles.length ? (
-        <p className="mt-6 text-sm text-cine-faint">No titles yet. Add a folder or pair a media server.</p>
+        <p className="mt-6 text-sm text-cine-faint">No titles yet. Add a folder or sign in with Plex.</p>
       ) : null}
     </div>
   );
@@ -348,15 +373,18 @@ export function SidebarRoom() {
   const remote = useCinevo((s) => s.remoteTitles);
   const yours = [...local, ...remote];
   return (
-    <div>
-      <p className="font-ui text-xs tracking-[0.22em] text-cine-muted">HOME LIBRARY</p>
-      <h1 className="font-display mb-2 text-3xl font-extrabold tracking-tight">Add sources</h1>
-      <p className="mb-6 max-w-2xl text-sm text-cine-muted">
-        Folders scan in this browser. Plex and Jellyfin pair through CINEVO Node so tokens never leave that machine.
-      </p>
+    <div className="house-page">
+      <header>
+        <p className="house-kicker">Home library</p>
+        <h1>Add sources</h1>
+        <p className="lede">
+          Folders scan in this browser. Sign in with Plex to see every server on your account — home, shared, remote.
+          Jellyfin still pairs through CINEVO Node.
+        </p>
+      </header>
       <AddLibrary />
       {yours.length ? (
-        <div className="mt-8">
+        <div className="mt-10">
           <Rail heading="In your library" titles={yours.slice(0, 12)} />
         </div>
       ) : null}

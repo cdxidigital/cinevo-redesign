@@ -8,7 +8,7 @@ const os = require("node:os");
 const crypto = require("node:crypto");
 const { exec } = require("node:child_process");
 
-const VERSION = "0.1.0";
+const VERSION = "0.2.0";
 const HOST = "127.0.0.1";
 const PORT = Number(process.env.CINEVO_NODE_PORT || 48184);
 const CODE_TTL_MS = 10 * 60 * 1000;
@@ -55,6 +55,12 @@ function makeCode() {
   return `${raw.slice(0, 3)}-${raw.slice(3)}`;
 }
 
+function normCode(value) {
+  return String(value || "")
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "");
+}
+
 const state = {
   config: loadConfig(),
   code: makeCode(),
@@ -99,6 +105,7 @@ function send(res, status, body, extra = {}) {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "Authorization, Content-Type",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Private-Network": "true",
     ...extra,
   };
   res.writeHead(status, headers);
@@ -147,6 +154,21 @@ function requireSession(req, res) {
   return session;
 }
 
+function brandPng() {
+  const candidates = [
+    path.join(__dirname, "brand", "icon-256.png"),
+    path.join(process.cwd(), "brand", "icon-256.png"),
+  ];
+  for (const file of candidates) {
+    try {
+      if (fs.existsSync(file)) return fs.readFileSync(file);
+    } catch {
+      /* ignore */
+    }
+  }
+  return null;
+}
+
 function dashboardHtml() {
   const code = Date.now() > state.codeExpires ? (rotateCode(), state.code) : state.code;
   const mins = Math.max(1, Math.round((state.codeExpires - Date.now()) / 60000));
@@ -162,23 +184,25 @@ function dashboardHtml() {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CINEVO Node</title>
+  <link rel="icon" href="/icon.png" />
+  <link rel="apple-touch-icon" href="/icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&family=Rajdhani:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    :root { --bg:#0a0c10; --elev:#10131a; --cyan:#00e5ff; --text:#f4f6fa; --muted:#9aa3b5; --line:rgba(255,255,255,.1); }
+    :root { --bg:#0b0b0b; --elev:#141414; --cyan:#3b7bff; --text:#f5f5f5; --muted:#a3a3a3; --line:rgba(255,255,255,.12); }
     * { box-sizing: border-box; }
     body { margin:0; background:var(--bg); color:var(--text); font-family: Inter, system-ui, sans-serif; }
-    header { display:flex; justify-content:space-between; align-items:center; padding:20px 28px; border-bottom:1px solid var(--line); }
-    .brand { font-family: Orbitron, sans-serif; letter-spacing:.18em; font-size:14px; }
-    .brand span { color: var(--cyan); }
+    header { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:20px 28px; border-bottom:1px solid var(--line); }
+    .brand { display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.12em; font-size:14px; }
+    .brand img { width:28px; height:28px; border-radius:7px; }
     main { max-width:720px; margin:0 auto; padding:40px 24px 80px; }
-    h1 { font-family: Orbitron, sans-serif; font-size:28px; letter-spacing:.08em; }
+    h1 { font-size:32px; letter-spacing:-.04em; margin:8px 0 12px; }
     p { color: var(--muted); line-height:1.6; }
-    .code { font-family: Orbitron, sans-serif; font-size:42px; letter-spacing:.2em; color:var(--cyan); margin:12px 0; }
+    .code { font-size:42px; font-weight:800; letter-spacing:.18em; color:var(--cyan); margin:12px 0; }
     .card { border:1px solid var(--line); background:var(--elev); border-radius:16px; padding:20px; margin:18px 0; }
-    label { display:block; font-family: Rajdhani, sans-serif; font-size:12px; letter-spacing:.14em; color:var(--muted); margin:10px 0 6px; }
-    input { width:100%; height:44px; border-radius:8px; border:1px solid var(--line); background:#0b0d12; color:var(--text); padding:0 12px; }
-    button { height:44px; border:0; border-radius:8px; background:var(--cyan); color:var(--bg); font-family: Rajdhani, sans-serif; font-weight:700; letter-spacing:.08em; padding:0 16px; cursor:pointer; }
+    label { display:block; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin:10px 0 6px; }
+    input { width:100%; height:44px; border-radius:8px; border:1px solid var(--line); background:#111; color:var(--text); padding:0 12px; font-family:inherit; }
+    button { height:44px; border:0; border-radius:8px; background:var(--cyan); color:#fff; font-family:inherit; font-weight:700; letter-spacing:.06em; padding:0 16px; cursor:pointer; }
     button.ghost { background:transparent; color:var(--cyan); border:1px solid var(--cyan); }
     ul { list-style:none; padding:0; }
     li { display:flex; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); font-size:14px; }
@@ -188,7 +212,7 @@ function dashboardHtml() {
 </head>
 <body>
   <header>
-    <div class="brand">CIN<span>EVO</span> NODE</div>
+    <div class="brand"><img src="/icon.png" alt="" />CINEVO NODE</div>
     <small>${escapeHtml(state.config.deviceId)} · v${VERSION} · 127.0.0.1:${PORT}</small>
   </header>
   <main>
@@ -431,6 +455,21 @@ async function handle(req, res) {
     return;
   }
 
+  if (req.method === "GET" && (url.pathname === "/icon.png" || url.pathname === "/favicon.ico")) {
+    const png = brandPng();
+    if (!png) {
+      send(res, 404, { error: "Icon missing" });
+      return;
+    }
+    res.writeHead(200, {
+      "Content-Type": "image/png",
+      "Cache-Control": "public, max-age=86400",
+      "Access-Control-Allow-Origin": "*",
+    });
+    res.end(png);
+    return;
+  }
+
   if (req.method === "GET" && (url.pathname === "/" || url.pathname === "/dashboard")) {
     send(res, 200, dashboardHtml());
     return;
@@ -451,11 +490,8 @@ async function handle(req, res) {
       return;
     }
     if (Date.now() > state.codeExpires) rotateCode();
-    const code = String(body.code || "")
-      .trim()
-      .toUpperCase()
-      .replace(/\s+/g, "");
-    if (!code || code !== state.code) {
+    const code = normCode(body.code);
+    if (!code || code !== normCode(state.code)) {
       send(res, 401, { error: "Pairing was not accepted" });
       return;
     }

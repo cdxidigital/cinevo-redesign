@@ -27,69 +27,63 @@ export function Detail() {
   if (!title) return null;
   const similar = similarTo(title, libraryPool());
   return (
-    <div className="fixed inset-0 z-30 overflow-y-auto bg-cine-bg">
-      <img src={title.still} alt="" className="absolute inset-0 h-[70vh] w-full object-cover opacity-40" />
-      <div className="absolute inset-0 bg-linear-to-b from-cine-bg/20 via-cine-bg/70 to-cine-bg" />
-      <div className="relative mx-auto max-w-5xl px-5 pb-16 pt-6">
-        <button
-          type="button"
-          onClick={closeTitle}
-          className="mb-6 inline-flex h-11 items-center gap-1 font-ui text-sm text-cine-muted"
-        >
+    <div className="house-detail">
+      <img src={title.still || "/stills/theater.jpg"} alt="" className="house-detail__art" />
+      <div className="house-detail__veil" />
+      <div className="house-detail__inner">
+        <button type="button" onClick={closeTitle} className="house-back">
           <ChevronLeft size={16} /> Back
         </button>
-        <p className="font-ui text-xs tracking-[0.28em] text-cine-cyan">
-          {title.kind === "series" ? "SERIES" : "FEATURE"}
-        </p>
-        <h1 className="mt-2 font-display text-4xl font-bold tracking-wide md:text-5xl">{title.title}</h1>
-        <p className="mt-3 font-mono text-sm text-cine-muted">
-          {title.year} · {title.runtime} · {title.genre}
-          {title.rating > 0 ? (
-            <>
-              {" "}
-              · <Star size={12} className="inline text-cine-amber" fill="currentColor" /> {title.rating.toFixed(1)}
-            </>
-          ) : null}
-        </p>
-        <div className="mt-5 flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={() => play(title.id)}
-            className="inline-flex h-11 items-center gap-2 rounded-md bg-cine-cyan px-5 font-ui font-bold tracking-wider text-cine-bg"
-          >
-            <Play size={16} fill="currentColor" /> {progress > 0 && progress < 100 ? "Resume" : "Play"}
-          </button>
-          <button
-            type="button"
-            onClick={() => toggleFavorite(title.id)}
-            className="inline-flex h-11 items-center gap-2 rounded-md border border-cine-cyan px-5 font-ui font-bold tracking-wider text-cine-cyan"
-          >
-            {fav ? <Check size={16} /> : <ListPlus size={16} />}
-            {fav ? "In My List" : "My List"}
-          </button>
-          <button
-            type="button"
-            onClick={() => (queued ? removeTonight(title.id) : addTonight(title.id))}
-            className="inline-flex h-11 items-center rounded-md border border-cine-border px-5 font-ui font-bold tracking-wider text-cine-muted"
-          >
-            {queued ? "Queued" : "Tonight"}
-          </button>
+        <div className="house-detail__copy">
+          <p className="house-kicker">{title.kind === "series" ? "Series" : "Feature"}</p>
+          <h1>{title.title}</h1>
+          <p className="house-meta">
+            <span>{title.year}</span>
+            <i />
+            <span>{title.runtime}</span>
+            <i />
+            <span>{title.genre}</span>
+            {title.rating > 0 ? (
+              <>
+                <i />
+                <span>
+                  <Star size={12} className="inline text-cine-amber" fill="currentColor" /> {title.rating.toFixed(1)}
+                </span>
+              </>
+            ) : null}
+          </p>
+          <div className="house-actions">
+            <button type="button" onClick={() => play(title.id)} className="house-btn house-btn--play">
+              <Play size={16} fill="currentColor" /> {progress > 0 && progress < 100 ? "Resume" : "Play"}
+            </button>
+            <button type="button" onClick={() => toggleFavorite(title.id)} className="house-btn house-btn--ghost">
+              {fav ? <Check size={16} /> : <ListPlus size={16} />}
+              {fav ? "In My List" : "My List"}
+            </button>
+            <button
+              type="button"
+              onClick={() => (queued ? removeTonight(title.id) : addTonight(title.id))}
+              className="house-btn house-btn--ghost"
+            >
+              {queued ? "Queued" : "Tonight"}
+            </button>
+          </div>
+          <p className="mt-7 max-w-xl text-cine-muted">{title.synopsis}</p>
+          <p className="mt-4 font-ui text-sm text-cine-faint">
+            {title.sourceLabel ? `From ${title.sourceLabel}` : null}
+            {title.director && title.director !== title.sourceLabel ? ` · Dir. ${title.director}` : null}
+            {title.cast.length ? ` · ${title.cast.join(" · ")}` : null}
+          </p>
         </div>
-        <p className="mt-6 max-w-2xl text-cine-muted">{title.synopsis}</p>
-        <p className="mt-4 font-ui text-sm text-cine-faint">
-          {title.sourceLabel ? `From ${title.sourceLabel}` : null}
-          {title.director && title.director !== title.sourceLabel ? ` · Dir. ${title.director}` : null}
-          {title.cast.length ? ` · ${title.cast.join(" · ")}` : null}
-        </p>
         <form
-          className="mt-8 max-w-xl"
+          className="mt-10 max-w-xl"
           onSubmit={(e) => {
             e.preventDefault();
             addNote(title.id, note);
             setNote("");
           }}
         >
-          <label className="font-ui text-xs tracking-[0.22em] text-cine-muted">A NOTE ON THIS TITLE</label>
+          <label className="house-kicker">A note on this title</label>
           <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
@@ -97,11 +91,11 @@ export function Detail() {
             placeholder="Private. Stays on this device."
             className="mt-2 h-20 w-full rounded-md border border-cine-border bg-cine-well p-3 font-ui"
           />
-          <button type="submit" className="mt-2 h-11 rounded-md border border-cine-border px-4 font-ui font-bold text-cine-cyan">
+          <button type="submit" className="house-btn house-btn--ghost mt-2">
             Save note
           </button>
         </form>
-        <div className="mt-10">
+        <div className="mt-14">
           <Rail heading="Similar titles" titles={similar} />
         </div>
       </div>
@@ -358,7 +352,7 @@ export function CoreModal() {
             <p className="text-sm text-cine-muted">
               {sources.length
                 ? `${sources.length} source${sources.length === 1 ? "" : "s"} connected.`
-                : "No sources yet. Folders scan in the browser. Plex and Jellyfin use CINEVO Node."}
+                : "No sources yet. Folders scan in the browser. Sign in with Plex from Library. Jellyfin uses CINEVO Node."}
             </p>
             {sources.length ? (
               <ul className="space-y-2">

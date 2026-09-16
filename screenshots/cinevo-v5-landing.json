@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 2606,
+      "bodyTextHash": "60aa9123c0895f6ba931c28867e57a6b82eee2da09b5a4b7c71385d44dd2111c",
+      "bodyTextPrefix": "CINEVO Private cinema, reinvented Home Your library Node CINEVO ",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-v5-landing.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 2517,
+      "bodyTextHash": "e6015da7f30e95828d6ed1784a6d509de791bf84df21ad132387bfb1546b7d97",
+      "bodyTextPrefix": "CINEVO Enter CINEVO PRIVATE BY DESIGN Your media. Your moment. C",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-v5-landing-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/cinevo-v5-landing.json"
+}

@@ -1,15 +1,15 @@
-import { Clapperboard, FolderOpen, Home, Menu, Search, Settings2, Tv, X } from "lucide-react";
+import { Menu, Search, Settings2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useCinevo, type Room } from "@/lib/cinevo-store";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
 
-const NAV: { id: Room; label: string; icon: typeof Home }[] = [
-  { id: "stage", label: "Home", icon: Home },
-  { id: "movies", label: "Movies", icon: Clapperboard },
-  { id: "shows", label: "TV Shows", icon: Tv },
-  { id: "sidebar", label: "Library", icon: FolderOpen },
+const NAV: { id: Room; label: string }[] = [
+  { id: "stage", label: "Home" },
+  { id: "movies", label: "Movies" },
+  { id: "shows", label: "TV" },
+  { id: "sidebar", label: "Library" },
 ];
 
 export function Shell({
@@ -45,73 +45,51 @@ export function Shell({
     };
   }, [drawer]);
 
-  const nav = (
-    <>
-      {NAV.map((item) => {
-        const Icon = item.icon;
-        return (
-          <button
-            key={item.id}
-            type="button"
-            onClick={() => {
-              setRoom(item.id);
-              setDrawer(false);
-            }}
-            className={cn(
-              "flex h-11 w-full items-center gap-3 rounded-md px-3 font-ui text-sm font-medium",
-              room === item.id ? "bg-cine-surface text-cine-text" : "text-cine-muted hover:text-cine-text",
-            )}
-            aria-current={room === item.id ? "page" : undefined}
-          >
-            <Icon size={18} />
-            {item.label}
-          </button>
-        );
-      })}
-      <button
-        type="button"
-        className="flex h-11 w-full items-center gap-3 rounded-md px-3 font-ui text-sm font-medium text-cine-muted hover:text-cine-text"
-        onClick={() => {
-          setCoreOpen(true);
-          setDrawer(false);
-        }}
-      >
-        Core
-      </button>
-    </>
-  );
+  const go = (id: Room) => {
+    setRoom(id);
+    setDrawer(false);
+  };
 
   return (
-    <div className={cn("min-h-screen bg-cine-bg", night && "cinevo-night", zen && "cinevo-zen")}>
-      <aside className="fixed inset-y-0 left-0 z-20 hidden w-72 flex-col border-r border-cine-border bg-cine-elevated px-5 py-6 md:flex">
-        <Link to="/" aria-label="CINEVO home" className="mb-10 px-1">
-          <Logo size="md" />
+    <div className={cn("cinevo-house", night && "cinevo-night", zen && "cinevo-zen")}>
+      <div className="house-still" />
+      <div className="house-ambient" />
+      <header className="top-nav">
+        <Link to="/" aria-label="CINEVO home" className="top-nav__brand">
+          <Logo size="sm" tagline={false} />
         </Link>
-        <nav className="flex flex-1 flex-col gap-1" aria-label="Main">
-          {nav}
+        <nav className="top-nav__links max-md:hidden" aria-label="Main">
+          {NAV.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => go(item.id)}
+              className={cn(room === item.id && "is-on")}
+              aria-current={room === item.id ? "page" : undefined}
+            >
+              {item.label}
+            </button>
+          ))}
         </nav>
-      </aside>
-
-      <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-cine-border bg-cine-bg px-4 md:ml-72 md:h-20 md:px-6">
-        <button
-          type="button"
-          className="flex size-11 items-center justify-center rounded-md md:hidden"
-          aria-label="Open menu"
-          onClick={() => setDrawer(true)}
-        >
-          <Menu size={20} />
-        </button>
-        <Link to="/" aria-label="CINEVO home" className="md:hidden">
-          <Logo size="sm" />
-        </Link>
-        <div className="ml-auto flex items-center">
-          <button type="button" aria-label="Search" className="flex size-11 items-center justify-center rounded-md" onClick={() => setSearchOpen(true)}>
+        <div className="top-nav__tools">
+          <button
+            type="button"
+            className="top-nav__icon md:hidden"
+            aria-label="Open menu"
+            onClick={() => setDrawer(true)}
+          >
+            <Menu size={18} />
+          </button>
+          <button type="button" className="top-nav__core max-md:hidden" onClick={() => setCoreOpen(true)}>
+            Core
+          </button>
+          <button type="button" aria-label="Search" className="top-nav__icon" onClick={() => setSearchOpen(true)}>
             <Search size={18} />
           </button>
           <button
             type="button"
             aria-label="Settings"
-            className="flex size-11 items-center justify-center rounded-md"
+            className="top-nav__icon"
             onClick={() => setSettingsOpen(true)}
           >
             <Settings2 size={18} />
@@ -120,20 +98,45 @@ export function Shell({
       </header>
 
       {drawer ? (
-        <div className="fixed inset-0 z-30 bg-cine-bg/80 md:hidden" onMouseDown={() => setDrawer(false)}>
-          <aside className="h-full w-64 bg-cine-elevated p-4" onMouseDown={(e) => e.stopPropagation()}>
+        <div className="drawer-scrim md:hidden" onMouseDown={() => setDrawer(false)}>
+          <aside className="drawer-panel" onMouseDown={(e) => e.stopPropagation()}>
             <div className="mb-6 flex items-center justify-between">
-              <Logo size="md" />
-              <button type="button" aria-label="Close menu" className="flex size-11 items-center justify-center" onClick={() => setDrawer(false)}>
+              <Logo size="sm" />
+              <button type="button" aria-label="Close menu" className="top-nav__icon" onClick={() => setDrawer(false)}>
                 <X size={18} />
               </button>
             </div>
-            {nav}
+            <nav className="flex flex-col gap-1" aria-label="Main">
+              {NAV.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => go(item.id)}
+                  className={cn(
+                    "flex h-11 w-full items-center rounded-md px-3 font-ui text-sm font-medium",
+                    room === item.id ? "bg-cine-surface text-cine-text" : "text-cine-muted",
+                  )}
+                  aria-current={room === item.id ? "page" : undefined}
+                >
+                  {item.label}
+                </button>
+              ))}
+              <button
+                type="button"
+                className="flex h-11 w-full items-center rounded-md px-3 font-ui text-sm font-medium text-cine-muted"
+                onClick={() => {
+                  setCoreOpen(true);
+                  setDrawer(false);
+                }}
+              >
+                Core
+              </button>
+            </nav>
           </aside>
         </div>
       ) : null}
 
-      <main className="relative mx-auto max-w-6xl px-4 py-6 md:ml-72 md:px-8 md:py-8">{children}</main>
+      <main className={cn("house-main", room !== "stage" && "house-main--page")}>{children}</main>
       {overlays}
     </div>
   );

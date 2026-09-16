@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { FolderPlus, HardDrive, LoaderCircle, Server, Trash2 } from "lucide-react";
+import { FolderPlus, HardDrive, Trash2 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { addNodeConnection, addNodeFolder, importNodeSections, listNodeSections } from "@/lib/node-client";
 import { remoteTitle, scanFileList, isVideoFile, playableCount } from "@/lib/library";
 import { reconnectFolders, saveFolderHandle } from "@/lib/folder-handles";
 import { useCinevo } from "@/lib/cinevo-store";
+import { PlexConnect } from "./plex-connect";
 
 export function AddLibrary() {
   const sources = useCinevo((s) => s.sources);
@@ -19,8 +20,6 @@ export function AddLibrary() {
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
   const [folderPath, setFolderPath] = useState("");
-  const [plexUrl, setPlexUrl] = useState("http://127.0.0.1:32400");
-  const [plexToken, setPlexToken] = useState("");
   const [jfUrl, setJfUrl] = useState("http://127.0.0.1:8096");
   const [jfUser, setJfUser] = useState("");
   const [jfPass, setJfPass] = useState("");
@@ -121,26 +120,23 @@ export function AddLibrary() {
     }
   };
 
-  const connect = async (provider: "plex" | "jellyfin") => {
+  const connect = async (provider: "jellyfin") => {
     if (!nodeToken) {
-      setMessage("Pair CINEVO Node first — Plex and Jellyfin stay on that computer.");
+      setMessage("Pair CINEVO Node first — Jellyfin stays on that computer.");
       return;
     }
-    if (provider === "plex" && !plexToken.trim()) {
-      setMessage("Paste your Plex token first.");
-      return;
-    }
-    if (provider === "jellyfin" && (!jfUser.trim() || !jfPass)) {
+    if (!jfUser.trim() || !jfPass) {
       setMessage("Enter your Jellyfin username and password.");
       return;
     }
     setPending(true);
-    const body =
-      provider === "plex"
-        ? { provider, baseUrl: plexUrl.trim(), token: plexToken.trim() }
-        : { provider, baseUrl: jfUrl.trim(), username: jfUser.trim(), password: jfPass };
     try {
-      const added = await addNodeConnection(nodeUrl, nodeToken, body);
+      const added = await addNodeConnection(nodeUrl, nodeToken, {
+        provider,
+        baseUrl: jfUrl.trim(),
+        username: jfUser.trim(),
+        password: jfPass,
+      });
       if (!added.ok) {
         setMessage(added.error);
         return;
@@ -237,32 +233,7 @@ export function AddLibrary() {
           </div>
         </article>
 
-        <article className="glass rounded-xl p-4">
-          <Server className="text-cine-cyan" size={20} />
-          <h3 className="mt-3 font-display tracking-widest">Plex</h3>
-          <p className="mt-1 text-sm text-cine-faint">Token stays in Node. Choose sections after connect.</p>
-          <input
-            value={plexUrl}
-            onChange={(e) => setPlexUrl(e.target.value)}
-            aria-label="Plex server address"
-            className="mt-3 h-11 w-full rounded-md border border-cine-border bg-cine-well px-3 font-mono text-sm"
-          />
-          <input
-            value={plexToken}
-            onChange={(e) => setPlexToken(e.target.value)}
-            placeholder="X-Plex-Token"
-            aria-label="Plex token"
-            className="mt-2 h-11 w-full rounded-md border border-cine-border bg-cine-well px-3 font-mono text-sm"
-          />
-          <button
-            type="button"
-            onClick={() => void connect("plex")}
-            disabled={pending}
-            className="mt-3 h-11 w-full rounded-md border border-cine-cyan font-ui font-bold text-cine-cyan"
-          >
-            {pending ? <LoaderCircle className="mx-auto animate-spin" size={16} /> : "Connect Plex"}
-          </button>
-        </article>
+        <PlexConnect />
 
         <article className="glass rounded-xl p-4">
           <HardDrive className="text-cine-cyan" size={20} />
@@ -302,7 +273,7 @@ export function AddLibrary() {
 
       {!nodeToken ? (
         <p className="text-sm text-cine-muted">
-          Plex, Jellyfin, and disk paths need{" "}
+          Plex signs in from here. Jellyfin and disk paths need{" "}
           <Link to="/node" className="text-cine-cyan" onClick={() => setCoreOpen(false)}>
             a paired CINEVO Node
           </Link>
@@ -386,7 +357,7 @@ export function AddLibrary() {
         </div>
       ) : (
         <p className="rounded-xl border border-dashed border-cine-border px-4 py-5 text-sm text-cine-faint">
-          Nothing added yet. Select a folder, or pair Node and connect Plex or Jellyfin.
+          Nothing added yet. Select a folder, sign in with Plex, or pair Node for Jellyfin.
         </p>
       )}
 

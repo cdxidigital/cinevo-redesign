@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/app",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 757,
+      "bodyTextHash": "1b37662ad2178917c7b0c1e6b72e9a4772610011c22ecb89fb490e214dc31ac1",
+      "bodyTextPrefix": "CINEVO Home Movies TV Library CORE A CINEVO PICTURE Cinema, rein",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-v5-app.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 752,
+      "bodyTextHash": "5f36f1e4d0e5a0383054e0fbf5099de5f2dcc6ec7533f642701906ea38259e14",
+      "bodyTextPrefix": "CINEVO Home Movies TV Library A CINEVO PICTURE Cinema, reinvente",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-v5-app-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/cinevo-v5-app.json"
+}

@@ -11,7 +11,8 @@ export function InstallerCards() {
           download
           className="group rounded-xl border border-cine-border bg-cine-surface p-4 transition hover:border-cine-cyan"
         >
-          <p className="font-ui text-xs font-semibold uppercase tracking-[0.18em] text-cine-muted">{item.label}</p>
+          <img src="/node-icon.png" alt="" className="size-11 rounded-lg" />
+          <p className="mt-3 font-ui text-xs font-semibold uppercase tracking-[0.18em] text-cine-muted">{item.label}</p>
           <h3 className="mt-1 font-display text-lg font-semibold tracking-tight">{item.arch}</h3>
           <p className="mt-2 text-sm text-cine-faint">{item.hint}</p>
           <span className="mt-4 inline-flex h-11 items-center gap-2 font-ui text-sm font-bold text-cine-cyan">

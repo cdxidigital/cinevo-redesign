@@ -1,270 +1,241 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Play } from "lucide-react";
+import { ArrowDownRight, ArrowRight, Check, Play, ShieldCheck, Sparkles } from "lucide-react";
 import { InstallerCards } from "@/components/cinevo/installers";
 import { Logo } from "@/components/cinevo/logo";
-import { Reveal, useParallax } from "@/components/cinevo/cine-motion";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({ component: Home });
 
-const BILLS = [
-  { line: "Still with Plex? Babe…", still: "/stills/hero-theater.jpg", invert: false },
-  { line: "Be honest. Plex is your ex.", still: "", invert: true },
-  { line: "You outgrew Plex. We’re glad.", still: "/stills/doorway.jpg", invert: false },
-  { line: "Dump Plex already.", still: "/stills/projector.jpg", invert: false, accent: true },
+const NAV = [
+  { label: "Home", href: "/" },
+  { label: "Your library", to: "/app" as const },
+  { label: "Node", to: "/node" as const },
+  { label: "CINEVO Core", href: "/app" },
 ];
 
-const ACTS = [
-  { k: "I", t: "Your library.", d: "Point at a folder. Or bring Plex and Jellyfin with you. Nothing uploads." },
-  { k: "II", t: "Your house.", d: "CINEVO Node sits on the machine with the files. Pair once. Playback stays home." },
-  { k: "III", t: "Your cinema.", d: "4K. No ads. No subscriptions. A private screen that does not phone home." },
+const STEPS = [
+  { n: "01", t: "Connect a server", d: "Add a folder on this computer, sign in with Plex, or pair CINEVO Node for Jellyfin." },
+  { n: "02", t: "Choose sections", d: "Select only the movie and series libraries you want CINEVO to index." },
+  { n: "03", t: "Make it yours", d: "Your connected library appears only after your choice. Nothing is published." },
 ];
 
-const CREDITS = [
-  ["Written by", "Your library"],
-  ["Directed by", "You"],
-  ["Photography", "The house"],
-  ["Projection", "CINEVO Node"],
-  ["Sound", "Local only"],
-  ["No studio", "No ads"],
+const HIGHLIGHTS = [
+  {
+    n: "01",
+    eyebrow: "PRIVATE LIBRARIES",
+    title: "Choose exactly what belongs in view.",
+    description: "Folders, Plex, or Jellyfin through Node. Select the sections CINEVO may index. Media stays on your machine.",
+    action: "Set up libraries",
+    to: "/app" as const,
+  },
+  {
+    n: "02",
+    eyebrow: "FRIEND SHARING",
+    title: "Share with care, never by default.",
+    description: "Create time-bound, revocable invitations. The owner’s boundary is visible at every step.",
+    action: "Manage sharing",
+    to: "/app" as const,
+  },
+  {
+    n: "03",
+    eyebrow: "CINEVO CORE",
+    title: "A quieter way to care for your collection.",
+    description: "Library health, setup, and consent — without turning private media into a social performance.",
+    action: "Explore Core",
+    to: "/app" as const,
+  },
+  {
+    n: "04",
+    eyebrow: "CONSENT-LED AI",
+    title: "Thoughtful suggestions on your terms.",
+    description: "Ask only the titles already in this house. Nothing leaves until you opt in.",
+    action: "See AI controls",
+    to: "/app" as const,
+  },
 ];
-
-function Reel({
-  still,
-  ken,
-  bars,
-  factor = 36,
-  children,
-  className,
-}: {
-  still?: string;
-  ken?: boolean;
-  bars?: boolean;
-  factor?: number;
-  children: React.ReactNode;
-  className?: string;
-}) {
-  const imgRef = useParallax(ken ? 0 : factor);
-  return (
-    <section className={cn("relative min-h-svh overflow-hidden bg-black", className)}>
-      {still ? (
-        <img
-          ref={imgRef}
-          src={still}
-          alt=""
-          className={cn("absolute inset-0 h-full w-full", ken ? "cine-hero-still" : "cine-still")}
-        />
-      ) : null}
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/25" />
-      <div className="cine-vignette absolute inset-0" />
-      <div className="cine-grain absolute inset-0 z-10" />
-      {bars ? (
-        <>
-          <div className="cine-bar cine-bar-top" />
-          <div className="cine-bar cine-bar-bottom" />
-        </>
-      ) : (
-        <div className="cine-letterbox pointer-events-none absolute inset-0 z-20" />
-      )}
-      <div className="relative z-30 flex min-h-svh flex-col">{children}</div>
-    </section>
-  );
-}
 
 function Home() {
   return (
-    <div className="bg-black text-white">
-      <Reel still="/stills/hero-theater.jpg" ken bars>
-        <div className="cine-curtain absolute inset-0 z-40" />
-        <header className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-5 pt-8 md:px-8 md:pt-14">
-          <span className="font-display text-sm font-extrabold tracking-[0.32em]">CINEVO</span>
-          <nav className="flex items-center gap-2">
-            <a href="#press" className="hidden h-11 items-center px-3 font-ui text-sm font-medium text-white/70 hover:text-white sm:inline-flex">
-              Press
-            </a>
-            <Link to="/node" className="hidden h-11 items-center px-3 font-ui text-sm font-medium text-white/70 hover:text-white sm:inline-flex">
-              Node
-            </Link>
-            <Link
-              to="/app"
-              className="inline-flex h-11 items-center rounded-full bg-white px-5 font-ui text-sm font-semibold uppercase tracking-wider text-black transition-transform duration-150 active:scale-[0.96]"
-            >
-              Enter
-            </Link>
-          </nav>
-        </header>
-
-        <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col items-center justify-center px-5 pb-28 text-center md:pb-36">
-          <p className="cine-rise font-ui text-[11px] font-semibold uppercase tracking-[0.48em] text-white/65">
-            A CINEVO picture
-          </p>
-          <h1 className="mt-7 font-display font-extrabold leading-[0.88] tracking-tight">
-            <span className="cine-rise-delay block text-5xl md:text-7xl">Cinema,</span>
-            <span className="cine-rise-late mt-2 block text-5xl md:text-7xl">Reinvented.</span>
-          </h1>
-          <span className="cine-rise-end mt-10 inline-flex">
-            <Link
-              to="/app"
-              aria-label="Enter cinema"
-              className="cine-play flex size-16 items-center justify-center rounded-full border border-white/70 text-white transition-transform duration-150 active:scale-[0.96] md:size-20"
-            >
-              <Play size={22} fill="currentColor" className="ml-0.5" />
-            </Link>
-          </span>
+    <div className="public-home">
+      <header className="public-nav">
+        <Link to="/" className="public-brand" aria-label="CINEVO home">
+          <Logo size="md" />
+        </Link>
+        <nav aria-label="Homepage">
+          {NAV.map((item) =>
+            item.to ? (
+              <Link key={item.label} to={item.to}>
+                {item.label}
+              </Link>
+            ) : (
+              <a key={item.label} href={item.href}>
+                {item.label}
+              </a>
+            ),
+          )}
+        </nav>
+        <div className="public-nav__actions">
+          <Link to="/app" className="public-nav__enter">
+            Enter CINEVO <ArrowRight size={14} />
+          </Link>
         </div>
+      </header>
 
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 hidden h-[76px] items-center justify-between px-8 font-ui text-[11px] uppercase tracking-[0.28em] text-white/55 md:flex">
-          <span>CINEVO · 2026</span>
-          <span>Feature · 4K · No ads</span>
-          <span>Your library · Your house</span>
-        </div>
-      </Reel>
-
-      <Reel still="/stills/doorway.jpg" factor={42}>
-        <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-end px-5 pb-28 pt-24 md:px-8 md:pb-36">
-          <Reveal as="p" className="font-ui text-[11px] font-semibold uppercase tracking-[0.4em] text-white/50" variant="hold">
-            2.39:1
-          </Reveal>
-          <Reveal as="h2" className="mt-5 max-w-4xl font-display text-4xl font-extrabold leading-[0.95] tracking-tight md:text-7xl" delay={80}>
-            The house lights go down.
-            <br />
-            Your library stays.
-          </Reveal>
-          <Reveal as="p" className="mt-8 max-w-md text-lg text-white/70" delay={180}>
-            A private cinema for films you already own. Folders on disk. Plex. Jellyfin. Playback never leaves the building.
-          </Reveal>
-        </div>
-      </Reel>
-
-      <section className="bg-black">
-        {ACTS.map((act, i) => (
-          <article key={act.k} className="relative overflow-hidden border-t border-white/10">
-            {i === 1 ? (
-              <img src="/stills/screen-glow.jpg" alt="" className="cine-still absolute inset-0 h-full w-full opacity-50" />
-            ) : null}
-            <div className="relative mx-auto grid max-w-6xl items-end gap-6 px-5 py-20 md:grid-cols-[0.35fr_1.65fr] md:px-8 md:py-28">
-              <Reveal as="p" className="font-display text-6xl font-extrabold leading-none tracking-tight text-white/25 md:text-8xl" variant="hold">
-                {act.k}
-              </Reveal>
-              <div>
-                <Reveal as="h3" className="font-display text-4xl font-extrabold tracking-tight md:text-5xl" delay={90}>
-                  {act.t}
-                </Reveal>
-                <Reveal as="p" className="mt-4 max-w-xl text-base leading-relaxed text-white/60" delay={160}>
-                  {act.d}
-                </Reveal>
-              </div>
+      <main>
+        <section className="public-hero" aria-labelledby="public-hero-title">
+          <img src="/stills/hero-theater.jpg" alt="" className="public-hero__still" />
+          <div className="public-hero__veil" />
+          <div className="public-hero__orb" />
+          <div className="public-hero__content">
+            <span className="public-kicker">
+              <i /> PRIVATE BY DESIGN
+            </span>
+            <h1 id="public-hero-title">
+              Your media.
+              <br />
+              <em>Your moment.</em>
+            </h1>
+            <p>
+              CINEVO brings the libraries you control into a considered cinematic space — built around your collection,
+              the people you trust, and choices you can always reverse.
+            </p>
+            <div className="public-hero__actions">
+              <Link to="/app" className="public-primary">
+                <Play size={15} fill="currentColor" /> Enter CINEVO
+              </Link>
+              <Link to="/app" className="public-secondary">
+                Open your library <ArrowDownRight size={16} />
+              </Link>
             </div>
-          </article>
-        ))}
-      </section>
+          </div>
+          <div className="public-hero__note">
+            <ShieldCheck size={16} />
+            <span>
+              <b>Private from the first connection</b>
+              <small>Personal media remains on your computer or Plex server.</small>
+            </span>
+          </div>
+        </section>
 
-      <section id="rebound">
-        <Reveal as="p" className="bg-black px-5 py-10 text-center font-ui text-[11px] font-semibold uppercase text-white/40" variant="track">
-          Rebound with CINEVO
-        </Reveal>
-        {BILLS.map((bill, i) =>
-          bill.invert ? (
-            <article key={bill.line} className="flex min-h-[85vh] flex-col justify-between bg-white px-6 py-16 text-black md:px-20 md:py-20">
-              <Reveal as="p" className="font-ui text-[11px] font-semibold uppercase tracking-[0.4em] text-black/35" variant="hold">
-                Outdoor · 2026
-              </Reveal>
-              <Reveal as="p" className="max-w-5xl font-display text-5xl font-extrabold leading-[0.88] sm:text-6xl md:text-8xl" variant="track" delay={70}>
-                {bill.line}
-              </Reveal>
-              <Reveal delay={140}>
-                <Logo size="md" className="text-black" />
-              </Reveal>
-            </article>
-          ) : (
-            <Reel key={bill.line} still={bill.still} factor={24 + i * 6}>
-              <div className="flex min-h-svh flex-col justify-between px-6 py-16 md:px-20 md:py-20">
-                <Reveal as="p" className="font-ui text-[11px] font-semibold uppercase tracking-[0.4em] text-white/45" variant="hold">
-                  Outdoor · 2026
-                </Reveal>
-                <Reveal as="p" className="max-w-5xl font-display text-5xl font-extrabold leading-[0.88] sm:text-6xl md:text-8xl" variant="track" delay={70}>
-                  {bill.line}
-                </Reveal>
-                <Reveal delay={140}>
-                  <Logo size="md" className={bill.accent ? "text-cine-cyan" : "text-white"} />
-                </Reveal>
-              </div>
-            </Reel>
-          ),
-        )}
-      </section>
+        <section className="home-reel" aria-labelledby="home-reel-title">
+          <header>
+            <div>
+              <span className="public-kicker">START WITH YOUR LIBRARY</span>
+              <h2 id="home-reel-title">Nothing appears here until you choose it.</h2>
+            </div>
+            <p>CINEVO never fills your library with sample media or imported catalogue data.</p>
+          </header>
+          <div className="home-library-steps">
+            {STEPS.map((step) => (
+              <article key={step.n}>
+                <span>{step.n}</span>
+                <h3>{step.t}</h3>
+                <p>{step.d}</p>
+              </article>
+            ))}
+          </div>
+        </section>
 
-      <Reel still="/stills/projector.jpg" factor={48}>
-        <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-end px-5 pb-24 pt-24 md:px-8 md:pb-32" id="downloads">
-          <Reveal as="p" className="font-ui text-[11px] font-semibold uppercase tracking-[0.4em] text-white/50" variant="hold">
-            Feature presentation
-          </Reveal>
-          <Reveal as="h2" className="mt-4 max-w-3xl font-display text-4xl font-extrabold tracking-tight md:text-6xl" delay={80}>
-            Windows. Mac. Node.
-            <br />
-            The projector lives at home.
-          </Reveal>
-          <Reveal as="p" className="mt-5 mb-10 max-w-xl text-white/65" delay={160}>
-            Install CINEVO Node on the computer that holds the files. Pair once. Stream to the house.
-          </Reveal>
-          <div className="mb-8 flex flex-wrap gap-2">
-            {["Windows", "Mac", "Linux", "Android TV"].map((p) => (
-              <span key={p} className="inline-flex h-11 items-center rounded-full border border-white/25 px-4 font-ui text-sm">
-                {p}
+        <section className="home-manifesto" id="libraries">
+          <div className="home-manifesto__intro">
+            <span className="public-kicker">THE PRIVATE MEDIA OS</span>
+            <h2>
+              Every library is personal.
+              <br />
+              <em>So CINEVO starts with permission.</em>
+            </h2>
+            <p>
+              Bring together the media you own and host without turning it into someone else’s platform. Folders on this
+              computer. Plex at home or remote. Jellyfin through Node.
+            </p>
+            <Link to="/app" className="public-text-link">
+              Connect a library <ArrowRight size={15} />
+            </Link>
+          </div>
+          <div className="home-manifesto__rules">
+            <div>
+              <Check size={17} />
+              <span>
+                <b>Select libraries deliberately</b>
+                <small>Choose the individual sections CINEVO can see.</small>
               </span>
+            </div>
+            <div>
+              <Check size={17} />
+              <span>
+                <b>Keep sharing intentional</b>
+                <small>Set library scope and expiry before every invite.</small>
+              </span>
+            </div>
+            <div>
+              <Check size={17} />
+              <span>
+                <b>Stay in control of AI</b>
+                <small>Opt in and set the metadata scope for each request.</small>
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <section className="home-highlights" id="sharing" aria-labelledby="home-highlights-title">
+          <header>
+            <span className="public-kicker">A MORE CONSIDERED MEDIA LIFE</span>
+            <h2 id="home-highlights-title">
+              Everything useful.
+              <br />
+              Nothing extractive.
+            </h2>
+          </header>
+          <div className="home-highlights__grid">
+            {HIGHLIGHTS.map((item) => (
+              <Link key={item.n} to={item.to} className="home-highlight">
+                <span>{item.n}</span>
+                <em>{item.eyebrow}</em>
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+                <b>
+                  {item.action} <ArrowRight size={14} />
+                </b>
+              </Link>
             ))}
           </div>
-          <InstallerCards />
-        </div>
-      </Reel>
+        </section>
 
-      <section id="press" className="bg-white text-black">
-        <div className="mx-auto max-w-6xl px-5 py-24 md:px-8 md:py-28">
-          <Reveal as="p" className="font-ui text-[11px] font-semibold uppercase tracking-[0.4em] text-black/40" variant="hold">
-            Press kit
-          </Reveal>
-          <Reveal as="h2" className="mt-4 font-display text-5xl font-extrabold tracking-tight md:text-7xl" delay={80}>
-            Cinema, Reinvented.
-          </Reveal>
-          <div className="mt-14 grid gap-3 md:grid-cols-3">
-            <div className="flex min-h-64 items-center justify-center bg-black">
-              <Logo size="lg" className="text-white" />
-            </div>
-            <div className="flex min-h-64 items-center justify-center border border-black/12">
-              <Logo size="lg" className="text-black" />
-            </div>
-            <div className="flex min-h-64 items-center justify-center bg-black">
-              <Logo size="lg" className="text-cine-cyan" />
-            </div>
-          </div>
-          <p className="mt-12 max-w-lg text-sm leading-relaxed text-black/55">
-            CINEVO is a private cinema for libraries you already own. Folders, Plex, and Jellyfin. No ads. No subscriptions.
+        <section className="home-downloads" id="downloads">
+          <span className="public-kicker">CINEVO NODE</span>
+          <h2 className="mt-4 font-display text-4xl font-bold tracking-tight md:text-5xl">The projector lives at home.</h2>
+          <p className="mt-4 mb-10 max-w-xl text-sm text-[#a9a1ae]">
+            Install Node on the computer that holds the files. Pair once. Jellyfin and disk paths stay on loopback.
           </p>
-        </div>
-      </section>
+          <InstallerCards />
+        </section>
 
-      <footer className="border-t border-white/10 bg-black">
-        <div className="mx-auto max-w-6xl px-5 py-16 md:px-8">
-          <Reveal as="p" className="font-ui text-[11px] font-semibold uppercase tracking-[0.4em] text-white/35" variant="hold">
-            End titles
-          </Reveal>
-          <div className="mt-10 grid gap-8 md:grid-cols-2">
-            {CREDITS.map(([role, name], i) => (
-              <Reveal key={role} delay={i * 70} className="flex items-baseline justify-between gap-6 border-b border-white/10 pb-3">
-                <span className="font-ui text-xs uppercase tracking-[0.22em] text-white/40">{role}</span>
-                <span className="font-display text-xl font-semibold tracking-tight">{name}</span>
-              </Reveal>
-            ))}
+        <section className="home-closing">
+          <div>
+            <Sparkles size={18} className="text-cine-cyan" />
+            <span className="public-kicker">CINEMA, REINVENTED</span>
+            <h2>
+              A home for your
+              <br />
+              <em>entire world of stories.</em>
+            </h2>
           </div>
-          <div className="mt-16 flex flex-wrap items-end justify-between gap-6">
-            <Logo size="md" className="text-white" />
-            <div className="flex flex-wrap gap-5 text-sm text-white/50">
-              <a href="#press" className="hover:text-white">Press kit</a>
-              <Link to="/node" className="hover:text-white">Support</Link>
-              <Link to="/app" className="hover:text-white">Enter</Link>
-            </div>
+          <div>
+            <p>Connect the library you trust. Choose what CINEVO knows. Then settle in.</p>
+            <Link to="/app" className="public-primary">
+              Begin with your library <ArrowRight size={16} />
+            </Link>
           </div>
-        </div>
+        </section>
+      </main>
+
+      <footer className="public-footer">
+        <Link to="/" className="public-brand">
+          <Logo size="md" />
+        </Link>
+        <p>Your media. Your moment.</p>
+        <Link to="/app">
+          Open your library <ArrowRight size={13} />
+        </Link>
       </footer>
     </div>
   );

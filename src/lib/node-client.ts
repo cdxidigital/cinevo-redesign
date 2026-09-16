@@ -142,20 +142,21 @@ export const INSTALLERS = [
     label: "Windows",
     arch: "x64",
     href: "/installers/CINEVO-Node-Windows-x64.zip",
-    hint: "PowerShell installer · loopback exe",
+    hint: "Signed · CINEVO icon · loopback exe",
   },
   {
     id: "mac-arm",
     label: "macOS",
     arch: "Apple Silicon",
     href: "/installers/CINEVO-Node-macOS-Apple-Silicon.zip",
-    hint: "Drag to Applications · M-series",
+    hint: "CINEVO icon · drag to Applications",
   },
   {
     id: "mac-intel",
     label: "macOS",
     arch: "Intel",
     href: "/installers/CINEVO-Node-macOS-Intel.zip",
-    hint: "Drag to Applications · Intel",
+    hint: "CINEVO icon · drag to Applications",
   },
-] as const;
+];
+

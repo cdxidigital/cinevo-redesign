@@ -87,7 +87,7 @@ var HEADERS = { TSS_SHELL: "X-TSS_SHELL" };
 * the dev styles URL for route-scoped CSS collection.
 */
 async function getStartManifest(matchedRoutes) {
-	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-BZWolQQc.mjs");
+	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-BhRGeKBM.mjs");
 	const startManifest = tsrStartManifest();
 	let routes = startManifest.routes;
 	routes[rootRouteId];
@@ -106,10 +106,32 @@ async function getStartManifest(matchedRoutes) {
 		routes: manifestRoutes
 	};
 }
-var manifest = { "7ebb63b2bc6bc267a35ed0fda7ece5b3241b752253db5bd836ae7020e8c799f4": {
-	functionName: "askCinevo_createServerFn_handler",
-	importer: () => import("./ask-cinevo-wcIDHism.mjs")
-} };
+var manifest = {
+	"3b4bb4c4449e4f7cbed728d66d982ae6de5dcd43acca1136797adc964162c2ee": {
+		functionName: "plexOpenServer_createServerFn_handler",
+		importer: () => import("./plex-api-CJliIqY1.mjs")
+	},
+	"7ebb63b2bc6bc267a35ed0fda7ece5b3241b752253db5bd836ae7020e8c799f4": {
+		functionName: "askCinevo_createServerFn_handler",
+		importer: () => import("./ask-cinevo-DYTTMJ4o.mjs")
+	},
+	"8fdebd237b20b8988d4b74313d86857020fb83c844c4c09a52255338ac0a62c2": {
+		functionName: "plexStartPin_createServerFn_handler",
+		importer: () => import("./plex-api-CJliIqY1.mjs")
+	},
+	"a2c3c4f890996a4f965cfe90be75b904e1ef7c0d41c7a73da07e74c8d6682ac0": {
+		functionName: "plexImportSections_createServerFn_handler",
+		importer: () => import("./plex-api-CJliIqY1.mjs")
+	},
+	"b1a629896a5a292418e73f888427598ab0a902c8f963c938f2e4cd8a5ed40586": {
+		functionName: "plexPollPin_createServerFn_handler",
+		importer: () => import("./plex-api-CJliIqY1.mjs")
+	},
+	"fe32bd140d3583c344ef891531d16c93349abb6d1e02a5fadc3e79e692953852": {
+		functionName: "plexListServers_createServerFn_handler",
+		importer: () => import("./plex-api-CJliIqY1.mjs")
+	}
+};
 async function getServerFnById(id, access) {
 	const serverFnInfo = manifest[id];
 	if (!serverFnInfo) throw new Error("Server function info not found for " + id);
@@ -1377,7 +1399,7 @@ var getBaseManifest = getProdBaseManifest;
 var createEarlyHintsForRequest = createEarlyHintsCollector;
 async function loadEntries() {
 	const [routerEntry, startEntry, pluginAdapters] = await Promise.all([
-		import("./router-D4bzg0ua.mjs").then((n) => n.t),
+		import("./router-LiPqbOFP.mjs").then((n) => n.t),
 		import("./start-5Z2QO8AU.mjs"),
 		import("./empty-plugin-adapters-D9UWiqvJ.mjs")
 	]);

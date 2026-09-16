@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 1991,
+      "bodyTextHash": "ba59c4baeac422b921b5b6cabedd50df2551b9eddd82fd9fb66c7ac54000aa16",
+      "bodyTextPrefix": "CINEVO Press Node ENTER NOW SHOWING · A CINEVO PICTURE Cinema, r",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-landing-fresh.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "CINEVO",
+      "hasCanvas": false,
+      "bodyTextLen": 1980,
+      "bodyTextHash": "a0afc90721d89fb25e1e23e78ca6dcedc8872b83224073faade63bdfb419aec6",
+      "bodyTextPrefix": "CINEVO ENTER NOW SHOWING · A CINEVO PICTURE Cinema, reinvented. ",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/cinevo-landing-fresh-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/cinevo-landing-fresh.json"
+}

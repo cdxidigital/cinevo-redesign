@@ -10,6 +10,7 @@ fi
 rm -rf "$DEST"
 cp -R "$APP" "$DEST"
 chmod +x "$DEST/Contents/MacOS/cinevo-node" || true
+xattr -dr com.apple.quarantine "$DEST" 2>/dev/null || true
 open "$DEST"
 echo "CINEVO Node installed to /Applications and launched."
 echo "Dashboard: http://127.0.0.1:48184"

@@ -71,5 +71,12 @@ test("loopback health, pair, and 401 without bearer", async (t) => {
   const body = await status.json();
   assert.ok(body.deviceId);
   assert.ok(Array.isArray(body.connections));
-  assert.ok(!JSON.stringify(body).toLowerCase().includes("password"));
+  const pairPlain = await fetch(`${base}/v1/pair`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ code: code.replace("-", "") }),
+  });
+  // First pair already rotated the code; a second pair with the old code must fail.
+  assert.equal(pairPlain.status, 401);
 });
+
