@@ -17,9 +17,10 @@ import { useCinevo, type CoreTab } from "@/lib/cinevo-store";
 const CORE_TABS: CoreTab[] = ["libraries", "sharing", "stewardship", "ai"];
 
 export const Route = createFileRoute("/app")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    core: CORE_TABS.includes(search.core as CoreTab) ? (search.core as CoreTab) : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { core?: CoreTab } => {
+    const core = CORE_TABS.includes(search.core as CoreTab) ? (search.core as CoreTab) : undefined;
+    return core ? { core } : {};
+  },
   component: Cinema,
 });
 

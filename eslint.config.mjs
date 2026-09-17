@@ -42,6 +42,13 @@ export default tseslint.config(
       "@typescript-eslint/no-explicit-any": "off",
     },
   },
+  {
+    // Standalone CommonJS Node installer script — real require() by design.
+    files: ["**/*.cjs"],
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
   // Disable rules that conflict with Prettier formatting.
   prettier,
 );
