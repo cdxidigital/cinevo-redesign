@@ -46,31 +46,101 @@
   }
 }
 
+/*
+ * Locked theme pack — 6 selectable themes (see cine-tokens.css for the
+ * source-of-truth palette). Each block sets the legacy --color-cine-*
+ * aliases so existing Tailwind classes (bg-cine-bg, text-cine-text, …)
+ * repaint automatically when [data-theme] changes.
+ */
 html[data-theme="pulse"] {
+  --color-cine-bg: #0a0a0a;
+  --color-cine-elevated: #141414;
+  --color-cine-surface: #141414;
+  --color-cine-well: #0c0a10;
+  --color-cine-border: #2a2a2a;
+  --color-cine-line: #2a2a2a;
+  --color-cine-text: #f5f5f5;
+  --color-cine-muted: #9a9a9a;
+  --color-cine-faint: #706b79;
   --color-cine-cyan: #0ccdf6;
+  --color-cine-magenta: #0ccdf6;
+  --color-cine-violet: #0ccdf6;
+  --color-cine-danger: #ff9d9d;
+}
+html[data-theme="noir"] {
+  --color-cine-bg: #000000;
+  --color-cine-elevated: #111111;
+  --color-cine-surface: #111111;
+  --color-cine-well: #0a0a0a;
+  --color-cine-border: #333333;
+  --color-cine-line: #333333;
+  --color-cine-text: #ffffff;
+  --color-cine-muted: #888888;
+  --color-cine-faint: #666666;
+  --color-cine-cyan: #ffffff;
+  --color-cine-magenta: #ffffff;
+  --color-cine-violet: #ffffff;
+  --color-cine-danger: #ff9d9d;
+}
+html[data-theme="violet"] {
+  --color-cine-bg: #09070e;
+  --color-cine-elevated: #15101f;
+  --color-cine-surface: #15101f;
+  --color-cine-well: #0c0913;
+  --color-cine-border: rgb(255 255 255 / 12%);
+  --color-cine-line: rgb(255 255 255 / 18%);
+  --color-cine-text: #f5f1fa;
+  --color-cine-muted: #9d96a4;
+  --color-cine-faint: #756c80;
+  --color-cine-cyan: #9b4dff;
+  --color-cine-magenta: #9b4dff;
   --color-cine-violet: #9b4dff;
+  --color-cine-danger: #ff9d9d;
 }
-html[data-theme="nova"] {
-  --color-cine-cyan: #49dfff;
-  --color-cine-bg: #05040a;
+html[data-theme="ember"] {
+  --color-cine-bg: #100a08;
+  --color-cine-elevated: #1c1210;
+  --color-cine-surface: #1c1210;
+  --color-cine-well: #130c0a;
+  --color-cine-border: #3a2822;
+  --color-cine-line: #3a2822;
+  --color-cine-text: #fff5f0;
+  --color-cine-muted: #b89a90;
+  --color-cine-faint: #8a7068;
+  --color-cine-cyan: #ff6b35;
+  --color-cine-magenta: #ff6b35;
+  --color-cine-violet: #ff6b35;
+  --color-cine-danger: #ff9d9d;
 }
-html[data-theme="iris"] {
+html[data-theme="sage"] {
+  --color-cine-bg: #0a0f0c;
+  --color-cine-elevated: #121a16;
+  --color-cine-surface: #121a16;
+  --color-cine-well: #0d130f;
+  --color-cine-border: #24302a;
+  --color-cine-line: #24302a;
+  --color-cine-text: #eef6f1;
+  --color-cine-muted: #8aa396;
+  --color-cine-faint: #647a6f;
+  --color-cine-cyan: #5ddea6;
+  --color-cine-magenta: #5ddea6;
+  --color-cine-violet: #5ddea6;
+  --color-cine-danger: #ff9d9d;
+}
+html[data-theme="day"] {
   --color-cine-bg: #f7f5fa;
   --color-cine-elevated: #ffffff;
-  --color-cine-surface: #f2eef7;
+  --color-cine-surface: #ffffff;
   --color-cine-well: #ece7f3;
   --color-cine-text: #1b1323;
   --color-cine-muted: #625a6c;
   --color-cine-faint: #837b8d;
   --color-cine-border: rgb(34 23 47 / 16%);
   --color-cine-line: rgb(34 23 47 / 18%);
-  --color-cine-cyan: #6c36ba;
-}
-html[data-theme="ember"] {
-  --color-cine-bg: #12080e;
-  --color-cine-elevated: #1c1016;
-  --color-cine-surface: #24151c;
-  --color-cine-cyan: #cb53a3;
+  --color-cine-cyan: #0ccdf6;
+  --color-cine-magenta: #0ccdf6;
+  --color-cine-violet: #0ccdf6;
+  --color-cine-danger: #cc4444;
 }
 
 @layer utilities {
@@ -98,7 +168,9 @@ html[data-theme="ember"] {
   }
 }
 
-.cinevo-night {
+/* OLED true-black boost — skipped on the light "Day" theme, where it would
+   force a near-black surface under theme-appropriate dark text. */
+html:not([data-theme="day"]) .cinevo-night {
   --color-cine-bg: #000000;
   --color-cine-elevated: #0d0d0d;
   --color-cine-surface: #141414;
@@ -108,12 +180,12 @@ html[data-theme="ember"] {
   display: none;
 }
 
-.swatch[data-swatch="pulse"] { background: #9b4dff; }
-.swatch[data-swatch="nova"] { background: #0ccdf6; }
-.swatch[data-swatch="iris"] { background: #f2eef7; }
-.swatch[data-swatch="ember"] { background: #cb53a3; }
-.swatch[data-swatch="ion"] { background: #7c5cff; }
-.swatch[data-swatch="glacier"] { background: #c5a4ff; }
+.swatch[data-swatch="pulse"] { background: #0ccdf6; }
+.swatch[data-swatch="noir"] { background: #ffffff; }
+.swatch[data-swatch="violet"] { background: #9b4dff; }
+.swatch[data-swatch="ember"] { background: #ff6b35; }
+.swatch[data-swatch="sage"] { background: #5ddea6; }
+.swatch[data-swatch="day"] { background: #0ccdf6; border: 1px solid rgb(34 23 47 / 30%); }
 
 @keyframes cine-ken {
   from { transform: scale(1.04); }

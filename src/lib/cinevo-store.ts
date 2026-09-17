@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { byMood, type Mood, type Title } from "./catalog";
 import type { LibSource, LibraryTitle, ThemeId } from "./library";
-import { THEMES, makePoster } from "./library";
+import { THEME_ALIASES, THEMES, makePoster } from "./library";
 import type { PlexServer } from "./plex";
 import {
   DEFAULT_DASHBOARD_WIDGETS,
@@ -509,7 +509,8 @@ export const useCinevo = create<CinevoState>()(
       skipHydration: true,
       merge: (persisted, current) => {
         const p = (persisted ?? {}) as Partial<CinevoState>;
-        const theme = p.prefs?.theme && THEMES.some((t) => t.id === p.prefs?.theme) ? p.prefs.theme : "pulse";
+        const rawTheme = p.prefs?.theme ? THEME_ALIASES[p.prefs.theme as string] ?? p.prefs.theme : undefined;
+        const theme = rawTheme && THEMES.some((t) => t.id === rawTheme) ? rawTheme : "pulse";
         return {
           ...current,
           ...p,
